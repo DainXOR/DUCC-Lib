@@ -8,9 +8,11 @@ namespace duc{
 	template<require::Arithmetic type, require::Integral auto m, require::Integral auto n>
 	class matrix;
 
-	template<require::Integral auto r, require::Arithmetic type>
+	template<require::UnsignedIntegral auto r, require::Arithmetic type>
 	class vector {
+	public:
 		using dim_t = decltype(r);
+		using properties = template_traits::vectorial_properties<r>;
 
 	public:
 		constexpr size_t rank() { return 1; }

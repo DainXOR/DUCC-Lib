@@ -2,47 +2,26 @@
 
 #include <array>
 
-namespace duc {
-	namespace math_utils {
-		namespace template_traits {
-			namespace {
-				template<bool test, auto val>
-				struct false_or_value_s {
-				};
+namespace duc::math_utils {
+	namespace template_traits {
 
-				template<auto val>
-				struct false_or_value_s<false, val> {
-					static constexpr bool value = false;
-				};
+		template<uint16_t... dimentions>
+		constexpr uint16_t str_rank = sizeof...(dimentions);
 
-				template<auto val>
-				struct false_or_value_s<true, val> {
-					static constexpr auto value = val;
-				};
-			}
+		template<size_t... dimentions>
+		constexpr size_t str_size = (... * dimentions);
 
-			template<bool test, auto value>
-			inline constexpr auto false_or_value = false_or_value_s<test, value>::value;
+		template<uint16_t... dimentions>
+		constexpr std::array<uint16_t, str_rank<dimentions...>> str_dimentions = { dimentions... };
 
-			template<bool test, auto value>
-			inline constexpr auto true_or_value = false_or_value_s<!test, value>::value;
+		template<uint64_t... dims>
+		struct vectorial_properties {
+			constexpr static uint16_t	rank = str_rank<dims...>;
+			constexpr static size_t		size = str_size<dims...>;
+			constexpr static auto		dimentions = str_dimentions<dims...>;
 
-		}
+		};
 
-		namespace helper {
 
-			template <typename size_type, std::size_t Size>
-			[[nodiscard]] constexpr std::array<size_type, Size> getMultipliers(const std::array<size_type, Size>& values) noexcept {
-
-				std::array<size_type, Size> multipliersArray{};
-
-				multipliersArray[Size - 1] = 1;
-				((multipliersArray[Size - i - 2] = multipliersArray[Size - i - 1] * values[Size - i - 1]), ...);
-
-				return multipliersArray;
-			}
-
-		}
 	}
-
 }

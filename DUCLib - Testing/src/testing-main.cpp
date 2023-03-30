@@ -2,14 +2,25 @@
 
 #include <duclib.h>
 
+template<auto...vals>
+using vp = duc::math_utils::template_traits::vectorial_properties<vals...>;
 
 int main() {
-	std::cout << duc::math_utils::require::Integral<char> << "\n";
-	duc::vector<3, int> Hmmm;
 
-	std::cout << duc::math_utils::require::Vector<duc::vector<2, int>> << "\n";
+	constexpr unsigned short V = 5;
 
-	// duc::math_utils::helper::tensor_properties_struct<1, 2, 3, 4, 5> Str;
+	duc::vector<V, char> tv;
+
+	std::cout << (typeid(decltype(tv)::properties)).name();
+
+	std::cout << vp<V>::size;
+	std::cout << vp<5>::rank;
+
+	for (auto e : vp<5>::dimentions ) {
+		std::cout << e;
+	}
+
+	std::array arr = vp<5>::dimentions;
 	
 	return 0;
 }

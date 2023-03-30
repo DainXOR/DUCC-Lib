@@ -167,6 +167,7 @@
     <ClInclude Include="src\experimental\math_experimental.h" />
     <ClInclude Include="src\structures\vector.h" />
     <ClInclude Include="src\utilities\constrains.h" />
+    <ClInclude Include="src\utilities\dmutils.h" />
     <ClInclude Include="src\utilities\template_traits.h" />
   </ItemGroup>
   <ItemGroup>
