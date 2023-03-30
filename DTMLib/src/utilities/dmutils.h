@@ -3,21 +3,20 @@
 #include <array>
 
 namespace duc::math_utils {
-	namespace helper {
 
-		template <typename size_type, std::size_t Size>
-		[[nodiscard]] constexpr std::array<size_type, Size>
-			getMultipliers(const std::array<size_type, Size>& values) noexcept {
+	template <typename size_type, size_t size>
+	constexpr std::array<size_type, size>
+		calculateMultipliers(const auto& values) noexcept {
 
-			std::array<size_type, Size> multipliersArray{};
+		std::array<size_type, size> multipliersArray{};
+		
+		multipliersArray[size - 1] = 1;
 
-			multipliersArray[Size - 1] = 1;
-			((multipliersArray[Size - i - 2] = multipliersArray[Size - i - 1] * values[Size - i - 1]), ...);
-
-			return multipliersArray;
+		for (size_t i = size - 1; i > 0; i--) {
+			multipliersArray[i - 1] = multipliersArray[i] * values[i];
 		}
 
-
-
+		return multipliersArray;
 	}
+
 }

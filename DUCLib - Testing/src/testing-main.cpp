@@ -1,26 +1,25 @@
 #include <iostream>
+#include <vector>
 
 #include <duclib.h>
+#include "utilities/dmutils.h"
+
+#define DUCLIB_MACRO_TOOLS
+#define DUCLIB_TESTING
+#include <macro_tools.h>
 
 template<auto...vals>
-using vp = duc::math_utils::template_traits::vectorial_properties<vals...>;
+using vp = duc::math_utils::vectorial_properties<vals...>;
 
 int main() {
 
-	constexpr unsigned short V = 5;
+	constexpr uint8_t V = 5;
 
-	duc::vector<V, char> tv;
+	duc::vector<V, float> tv{1, 2, 3, 4};
 
-	std::cout << (typeid(decltype(tv)::properties)).name();
-
-	std::cout << vp<V>::size;
-	std::cout << vp<5>::rank;
-
-	for (auto e : vp<5>::dimentions ) {
-		std::cout << e;
-	}
-
-	std::array arr = vp<5>::dimentions;
+	std::cout << tv.fastMagnitude() << "\n";
+	std::cout << tv.norm() << "\n";
 	
 	return 0;
 }
+

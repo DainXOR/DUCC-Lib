@@ -1,6 +1,6 @@
 #pragma once
 
-#define DUCLIB_MACRO_TOOLS
+
 //#define DUCLIB_MT
 //#define DUCLIB_LOG
 //#include <iostream>
@@ -47,9 +47,13 @@
 			#define DMP_TEST_RESULT(expression, expected)
 	
 		#endif // NDEBUG
-		
-		#define CONSTEXPR_TEST(function_call) std::cout << noexcept(function_call) << "\n"
 	#endif // DUCLIB_LOG
+	#ifdef DUCLIB_TESTING
+		/// \Note	When entering a template function use double parentheses to surround the call.
+		///			Macro confuses template parameters comma with macro arguments separator.
+		#define IS_CONSTEXPR(function_call) noexcept(function_call)
+		
+	#endif // DUCLIB_TESTING
 
 	#ifdef DUCLIB_ATT
 		#define

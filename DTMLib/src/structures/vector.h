@@ -1,76 +1,72 @@
 #pragma once
 
+#include <math.h>
+
 #include "../utilities/constrains.h"
 
 namespace duc{
-	using namespace math_utils;
 
 	template<require::Arithmetic type, require::Integral auto m, require::Integral auto n>
 	class matrix;
 
-	template<require::UnsignedIntegral auto r, require::Arithmetic type>
+	template<require::UnsignedIntegral auto r, require::Mathematical type>
 	class vector {
 	public:
 		using dim_t = decltype(r);
+		using value_type = type;
 		using properties = template_traits::vectorial_properties<r>;
 
 	public:
-		constexpr size_t rank() { return 1; }
-		constexpr size_t size() { return r; }
-		constexpr size_t dimention() { return r; }
+		constexpr size_t rank() const noexcept { return 1; }
+		constexpr size_t size() const noexcept { return r; }
+		constexpr size_t dimention() const noexcept { return r; }
 
-		constexpr size_t magnitude() {
-			type acumulator = 0;
+		constexpr double fastMagnitude() const noexcept {
+			type acumulator{};
 
-			for (dim_t i = r - 1; i >= 0; i--) {
+			for (size_t i = 0; i < r; i++) {
 				acumulator += buffer[i] * buffer[i];
 			}
 			return acumulator;
-		}
-		constexpr size_t norm() {
-			type acumulator = 0;
 
-			for (dim_t i = r - 1; i >= 0; i--) {
-				acumulator = buffer[i] * buffer[i];
-			}
-			return acumulator;
+			// // ((acumulator += buffer[r-1] * buffer[r - 1]), ...);  // fold expression
+			return static_cast<double>(acumulator);
+		}
+		constexpr double norm() const noexcept {
+			return sqrt(this->fastMagnitude());
 		}
 
-		type dotProduct(vector);
+		constexpr value_type dotProduct(vector) const noexcept;
 
-		vector &hadamardProduct(vector);
-		vector &crossProduct(vector);
-		vector &normalize();
+		constexpr vector &normalize() noexcept;
+		constexpr vector &hadamardProduct(vector);
+		constexpr vector &crossProduct(vector);
 
-		matrix<type, r, r> outerProduct(vector);
-		
-		vector &operator+(vector other) {}
-		vector &operator-(vector other) {}
-		vector &operator*(vector other) {}
-		vector &operator/(vector other) {}
+		constexpr matrix<value_type, r, r> outerProduct(vector);
 
-		template<require::Decimal scalar_t>
-		vector &operator+(scalar_t scalar){}
+		constexpr vector &operator+(vector other) noexcept {}
+		constexpr vector &operator-(vector other) noexcept {}
+		constexpr vector &operator*(vector other) noexcept {}
+		constexpr vector &operator/(vector other) noexcept {}
 
-		template<require::Decimal scalar_t>
-		vector &operator-(scalar_t scalar){}
-
-		template<require::Decimal scalar_t>
-		vector &operator*(scalar_t scalar){}
-
-		template<require::Decimal scalar_t>
-		vector &operator/(scalar_t scalar){}
+		constexpr vector &operator+(require::Real auto scalar) noexcept {}
+		constexpr vector &operator-(require::Real auto scalar) noexcept {}
+		constexpr vector &operator*(require::Real auto scalar) noexcept {}
+		constexpr vector &operator/(require::Real auto scalar) noexcept {}
 
 
-		type &operator[](require::Integral auto index);
+		constexpr value_type &operator[](require::Integral auto index) noexcept {
+		}
+		constexpr const value_type &operator[](require::Integral auto index) const noexcept {
+		}
 
 		// >Shady practices incomming
 
-		using buffer_type = type;
+		
 
 	public:
-		type buffer[r] = {};
-		//std::array<type, r> buffer = {};
+		// type buffer[r] = {};
+		std::array<value_type, r> buffer = {};
 		
 	};
 
