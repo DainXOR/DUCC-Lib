@@ -1,8 +1,11 @@
 #include <iostream>
-#include <vector>
 
-#include <duclib.h>
-#include "utilities/dmutils.h"
+#include <structures/vector.h>
+#include <functions/arithmetic.h>
+#include <utilities/dmutils.h>
+
+// #include <complex>
+// #include <string>
 
 #define DUCLIB_MACRO_TOOLS
 #define DUCLIB_TESTING
@@ -12,14 +15,23 @@ template<auto...vals>
 using vp = duc::math_utils::vectorial_properties<vals...>;
 
 int main() {
+	duc::exp(5, 10);
 
-	constexpr uint8_t V = 5;
+	duc::vector<5, int> Test = { { 1, 4, 4.f } };
 
-	duc::vector<V, float> tv{1, 2, 3, 4};
+	//duc::test_class Test;
+	for (auto elem : Test) {
+		std::cout << elem << "\n";
+	}
 
-	std::cout << tv.fastMagnitude() << "\n";
-	std::cout << tv.norm() << "\n";
-	
+	std::cout << IS_CONSTEXPR(Test.norm()) << "\n";
+
+	// std::cout << decltype(tv.buffer);
+
+	// std::cout << Hmm(1, '2', 3, 3.f) << "\n";
+	// std::cout << tv.fastMagnitude() << "\n";
+	// std::cout << tv.norm() << "\n";
+
 	return 0;
 }
 

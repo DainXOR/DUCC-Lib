@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include <vector>
 #include <math.h>
 
 #include "../utilities/constrains.h"
@@ -9,23 +11,48 @@ namespace duc{
 	template<require::Arithmetic type, require::Integral auto m, require::Integral auto n>
 	class matrix;
 
-	template<require::UnsignedIntegral auto r, require::Mathematical type>
+	namespace {
+		template<require::Integral auto r, require::Complex type, class container = void>
+		class vector_base {
+		public:
+		};
+
+		template<require::Integral auto r, require::Complex type>
+		class vector_base<r, type, std::array<type, r>> {
+		public:
+			std::array<type, r> buffer = {0};
+		};
+
+		template<require::Integral auto r, require::Complex type>
+		class vector_base<r, type, std::vector<type>> {
+		public:
+			std::vector<type> buffer = {0, 0};
+		};
+	}
+
+	template<require::Integral auto r = 0, require::Complex type = float>
 	class vector {
 	public:
 		using dim_t = decltype(r);
 		using value_type = type;
-		using properties = template_traits::vectorial_properties<r>;
+		using properties = math_utils::vectorial_properties<r>;
+
+		// std::array<type, r> buffer = {};
+		// std::conditional_t<r && (r < (((1 << 16) - 1) / sizeof(value_type))),
+		std::conditional_t<
+			r && (r < (((1 << 6) - 1) / sizeof(type))),
+			std::array<type, r>, std::vector<type>> buffer = {0};
 
 	public:
 		constexpr size_t rank() const noexcept { return 1; }
 		constexpr size_t size() const noexcept { return r; }
-		constexpr size_t dimention() const noexcept { return r; }
+		constexpr size_t dimention() const noexcept { return this->size(); }
 
 		constexpr double fastMagnitude() const noexcept {
 			type acumulator{};
 
 			for (size_t i = 0; i < r; i++) {
-				acumulator += buffer[i] * buffer[i];
+				acumulator += this->buffer[i] * this->buffer[i];
 			}
 			return acumulator;
 
@@ -36,37 +63,51 @@ namespace duc{
 			return sqrt(this->fastMagnitude());
 		}
 
-		constexpr value_type dotProduct(vector) const noexcept;
+		constexpr value_type dotProduct(const require::Vector auto& other) const noexcept;
 
-		constexpr vector &normalize() noexcept;
-		constexpr vector &hadamardProduct(vector);
-		constexpr vector &crossProduct(vector);
+		constexpr vector& normalize() noexcept;
+		constexpr vector& hadamardProduct(const require::Vector auto& other);
+		constexpr vector& crossProduct(const require::Vector auto& other);
 
-		constexpr matrix<value_type, r, r> outerProduct(vector);
+		constexpr matrix<value_type, r, r> outerProduct(const require::Vector auto& other) const ;
 
-		constexpr vector &operator+(vector other) noexcept {}
-		constexpr vector &operator-(vector other) noexcept {}
-		constexpr vector &operator*(vector other) noexcept {}
-		constexpr vector &operator/(vector other) noexcept {}
+		constexpr vector &operator+(const require::Vector auto& other) noexcept {}
+		constexpr vector &operator-(const require::Vector auto& other) noexcept {}
+		constexpr vector &operator*(const require::Vector auto& other) noexcept {}
+		constexpr vector &operator/(const require::Vector auto& other) noexcept {}
 
-		constexpr vector &operator+(require::Real auto scalar) noexcept {}
-		constexpr vector &operator-(require::Real auto scalar) noexcept {}
-		constexpr vector &operator*(require::Real auto scalar) noexcept {}
-		constexpr vector &operator/(require::Real auto scalar) noexcept {}
+		constexpr vector &operator+(const require::Real auto& scalar) noexcept {}
+		constexpr vector &operator-(const require::Real auto& scalar) noexcept {}
+		constexpr vector &operator*(const require::Real auto& scalar) noexcept {}
+		constexpr vector &operator/(const require::Real auto& scalar) noexcept {}
 
 
-		constexpr value_type &operator[](require::Integral auto index) noexcept {
+		constexpr value_type &operator[](const require::Integral auto& index) noexcept {
+			#ifndef NDEBUG
+			(index >= this->size());
+			#endif
 		}
-		constexpr const value_type &operator[](require::Integral auto index) const noexcept {
+		constexpr const value_type &operator[](const require::Integral auto& index) const noexcept {
+
+		}
+
+		auto begin() {
+			return this->buffer.begin();
+		}
+		auto end() {
+			return this->buffer.end();
+		}
+
+		auto rbegin() {
+			return this->buffer.rbegin();
+		}
+		auto rend() {
+			return this->buffer.rend();
 		}
 
 		// >Shady practices incomming
 
 		
-
-	public:
-		// type buffer[r] = {};
-		std::array<value_type, r> buffer = {};
 		
 	};
 

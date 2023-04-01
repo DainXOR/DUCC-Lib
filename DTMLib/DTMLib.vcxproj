@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="src\dtmlib.h" />
     <ClInclude Include="src\experimental\math_experimental.h" />
+    <ClInclude Include="src\functions\arithmetic.h" />
     <ClInclude Include="src\structures\vector.h" />
     <ClInclude Include="src\utilities\constrains.h" />
     <ClInclude Include="src\utilities\dmutils.h" />

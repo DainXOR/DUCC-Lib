@@ -21,10 +21,10 @@ namespace duc::require {
 
 	template<typename value_type>
 	concept Arithmetic = requires(value_type A, value_type B, double C) {
-
 			{ A + B }; // -> std::convertible_to<value_type>;
 			{ A - B }; // -> std::convertible_to<value_type>;
 			{ A * B }; // -> std::convertible_to<value_type>;
+			{ A / B }; // -> std::convertible_to<value_type>;
 
 			{ A + C }; // -> std::convertible_to<value_type>;
 			{ A - C }; // -> std::convertible_to<value_type>;
@@ -33,24 +33,39 @@ namespace duc::require {
 		};
 
 	template<typename value_type>
-	concept Mathematical = Integral<value_type> || Decimal<value_type> || Arithmetic<value_type>;
+	concept Complex = requires(value_type A, value_type B) {
+		Real<value_type> || Arithmetic<value_type>;
+
+		{ A + B } -> std::convertible_to<value_type>;
+		{ A - B } -> std::convertible_to<value_type>;
+		{ A * B } -> std::convertible_to<value_type>;
+		{ A / B } -> std::convertible_to<value_type>;
+
+		A = double();
+	};
 
 	template<class vector_t>
-	concept Vector = requires(vector_t v1, vector_t v2) {
+	concept Vector = requires(vector_t V1, vector_t V2, double S) {
 
-		Arithmetic<vector_t>;
+		{ V1 + V2 }; // -> std::convertible_to<value_type>;
+		{ V1 - V2 }; // -> std::convertible_to<value_type>;
+		{ V1 * V2 }; // -> std::convertible_to<value_type>;
 
-		// v1 * v2;
-		// v1 * scalar;
+		{ V1 + S }; // -> std::convertible_to<value_type>;
+		{ V1 - S }; // -> std::convertible_to<value_type>;
+		{ V1 * S }; // -> std::convertible_to<value_type>;
+		{ V1 / S }; // -> std::convertible_to<value_type>;
 
-		v1.normalize();
-		v1.crossProduct(v2);
+		// V1 * V2;
+		// V1 * scalar;
 
-		v1.dimention();
-		v1[uint64_t()];
+		V1.dimention();
+		V1.norm();
+		V1.normalize();
+		V1.crossProduct(V2);
+		V1.dotProduct(V2);
 
-		v1.fastMagnitude();
-		v1.dotProduct(v2);
+		V1[uint64_t()];
 
 	};
 
@@ -72,6 +87,14 @@ namespace duc::require {
 		math_utils::vectorial_properties<args...>::dimentions[n];
 		math_utils::vectorial_properties<args...>::dimentions.size();
 	};
+
+	template<typename space_t>
+	concept VectorialSpace = requires(space_t S1) {
+		S1.innerProduct();
+	};
+
+	template<typename value_type>
+	concept Vectorial = Vector<value_type> || Matrix<value_type> || Tensor<> || VectorialSpace<value_type>;
 }
 
 	

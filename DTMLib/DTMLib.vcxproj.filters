@@ -33,6 +33,9 @@
     <ClInclude Include="src\utilities\dmutils.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="src\functions\arithmetic.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dtmlib.cpp">
