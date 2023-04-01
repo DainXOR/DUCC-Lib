@@ -18,6 +18,7 @@ int main() {
 	duc::exp(5, 10);
 
 	duc::vector<int, 5> Test = { { 1, 4, 4.f } };
+	Test = {};
 
 	//duc::test_class Test;
 	for (auto elem : Test) {

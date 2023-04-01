@@ -19,7 +19,7 @@ namespace duc{
 
 
 
-	template<require::Complex type = float, require::Integral auto r = 0>
+	template<require::Complex type, require::Integral auto r>
 	class vector {
 	public:
 		using dim_t = decltype(r);
