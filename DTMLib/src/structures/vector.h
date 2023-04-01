@@ -8,29 +8,18 @@
 
 namespace duc{
 
-	template<require::Arithmetic type, require::Integral auto m, require::Integral auto n>
+	template<require::Complex type = float, require::Integral auto r = 0>
+	class vector;
+
+	template<require::Complex type, require::Integral auto m, require::Integral auto n>
 	class matrix;
 
-	namespace {
-		template<require::Integral auto r, require::Complex type, class container = void>
-		class vector_base {
-		public:
-		};
+	template<require::Complex type, require::Integral auto... dims>
+	class tensor;
 
-		template<require::Integral auto r, require::Complex type>
-		class vector_base<r, type, std::array<type, r>> {
-		public:
-			std::array<type, r> buffer = {0};
-		};
 
-		template<require::Integral auto r, require::Complex type>
-		class vector_base<r, type, std::vector<type>> {
-		public:
-			std::vector<type> buffer = {0, 0};
-		};
-	}
 
-	template<require::Integral auto r = 0, require::Complex type = float>
+	template<require::Complex type = float, require::Integral auto r = 0>
 	class vector {
 	public:
 		using dim_t = decltype(r);

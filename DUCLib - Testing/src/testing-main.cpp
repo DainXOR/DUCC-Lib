@@ -17,7 +17,7 @@ using vp = duc::math_utils::vectorial_properties<vals...>;
 int main() {
 	duc::exp(5, 10);
 
-	duc::vector<5, int> Test = { { 1, 4, 4.f } };
+	duc::vector<int, 5> Test = { { 1, 4, 4.f } };
 
 	//duc::test_class Test;
 	for (auto elem : Test) {
