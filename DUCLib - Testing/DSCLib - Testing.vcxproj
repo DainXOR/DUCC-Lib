@@ -80,6 +80,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -97,6 +99,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,6 +118,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +137,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

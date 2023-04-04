@@ -45,6 +45,16 @@
 #define PASTEX8 (a) a a a a a a a a
 #define PASTEX9 (a) a a a a a a a a a
 
+#define USE_1 (a) a
+#define USE_2 (a) a, a,
+#define USE_3 (a) a, a, a,
+#define USE_4 (a) a, a, a, a,
+#define USE_5 (a) a, a, a, a, a,
+#define USE_6 (a) a, a, a, a, a, a,
+#define USE_7 (a) a, a, a, a, a, a, a,
+#define USE_8 (a) a, a, a, a, a, a, a, a,
+#define USE_9 (a) a, a, a, a, a, a, a, a, a
+
 
 #define APPLYX1 (before,after,a) X(before,after,a)
 #define APPLYX2 (before,after,a,b) X(before,after,a) X(before,after,b)
@@ -62,7 +72,9 @@
 #define APPLYXn_s(...) APPLYX_s(XPASTE(APPLYX, PP_NARG(__VA_ARGS__)), __VA_ARGS__)
 #define APPLYXn(before, after, ...) APPLYX_(XPASTE(APPLYX, PP_NARG(__VA_ARGS__)), before, after, __VA_ARGS__)
 
-#define NAMESPACES(...) APPLYXn(namespace, {, __VA_ARGS__)
-#define CLOSEXn(times) APPLYX_s(XPASTE(PASTEX, times), })
+#define XUSE(elem, n) USE_ ## n (elem)
+#define USE_N(element, times) XUSE(element, times)
+// #define NAMESPACES(...) APPLYXn(namespace, {, __VA_ARGS__)
+// #define CLOSEXn(times) APPLYX_s(XPASTE(PASTEX, times), })
 
 #endif // ENABLE_EXPERIMENTAL_MACROS

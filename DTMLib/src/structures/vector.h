@@ -28,9 +28,11 @@ namespace duc{
 
 		// std::array<type, r> buffer = {};
 		// std::conditional_t<r && (r < (((1 << 16) - 1) / sizeof(value_type))),
-		std::conditional_t<
-			r && (r < (((1 << 6) - 1) / sizeof(type))),
-			std::array<type, r>, std::vector<type>> buffer = {0};
+		using buffer_type = std::conditional_t< r && (r < (((1 << 6) - 1) / sizeof(type))),
+			std::array<type, r>, 
+			std::vector<type>>;
+
+		buffer_type buffer = { 0 };
 
 	public:
 		constexpr size_t rank() const noexcept { return 1; }
@@ -73,11 +75,34 @@ namespace duc{
 
 		constexpr value_type &operator[](const require::Integral auto& index) noexcept {
 			#ifndef NDEBUG
-			(index >= this->size());
+			if (index >= this->size()) {
+				return value_type();
+			}
 			#endif
+
+			return this->buffer[index];
 		}
 		constexpr const value_type &operator[](const require::Integral auto& index) const noexcept {
+			#ifndef NDEBUG
+			if (index >= this->size()) {
+				return value_type();
+			}
+			#endif
 
+			return this->buffer[index];
+		}
+
+		auto at(const require::Integral auto& index) {
+			if (index < 0)
+				return this->buffer.at(this->size() - index);
+
+			return this->buffer.at(index);
+		}
+		auto front() {
+			return this->buffer.front();
+		}
+		auto back() {
+			return this->buffer.back();
 		}
 
 		auto begin() {
@@ -93,6 +118,21 @@ namespace duc{
 		auto rend() {
 			return this->buffer.rend();
 		}
+
+		auto cbegin() {
+			return this->buffer.cbegin();
+		}
+		auto cend() {
+			return this->buffer.cend();
+		}
+
+		auto crbegin() {
+			return this->buffer.crbegin();
+		}
+		auto crend() {
+			return this->buffer.crend();
+		}
+
 
 		// >Shady practices incomming
 

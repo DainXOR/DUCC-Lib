@@ -147,6 +147,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\benchmark.h" />
     <ClInclude Include="src\cudlib.h" />
     <ClInclude Include="src\macro_tools.h" />
     <ClInclude Include="src\experimental.h" />
