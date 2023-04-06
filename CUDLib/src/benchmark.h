@@ -34,6 +34,7 @@ std::vector<std::tuple<Args...>> generateRandomNumbers(int n, std::array<Args, 2
 	return inputs;
 }
 
+/*
 template<typename... Args>
 uint64_t benchmark(auto function, std::vector<std::tuple<Args...>> inputs = {}) {
 	constexpr uint32_t testIterations = 10000000;
@@ -57,3 +58,4 @@ uint64_t benchmark(auto function, std::vector<std::tuple<Args...>> inputs = {}) 
     } while (false)
 
 
+*/

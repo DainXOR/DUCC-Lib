@@ -1,9 +1,11 @@
 #pragma once
 
 
-//#define DUCLIB_MT
+//#define DUCLIB_MACRO_TOOLS
 //#define DUCLIB_LOG
 //#include <iostream>
+
+#define DUCLIB_TESTING
 
 #if !defined(DUCLIB_MT) && defined(DUCLIB_MACRO_TOOLS)
 	#define DUCLIB_STT 1
@@ -45,10 +47,31 @@
 	
 		#endif // NDEBUG
 	#endif // DUCLIB_LOG
+
 	#ifdef DUCLIB_TESTING
+		#include <iostream>
 		/// \Note	When entering a template function use double parentheses to surround the call.
 		///			Macro confuses template parameters comma with macro arguments separator.
-		#define IS_CONSTEXPR(function_call) noexcept(function_call)
+		#define TEST_CONSTEXPR(function_call) noexcept(function_call)
+
+		#define TEST_FUNCTION(function_call, expectedResult)		\
+		do{															\
+			std::cout << std::boolalpha;							\
+			std::cout <<											\
+				#function_call ": " <<								\
+				function_call << " -> " << expectedResult <<		\
+				" | " << (function_call == expectedResult) << "\n";	\
+			std::cout << std::noboolalpha;							\
+		} while (false)
+
+		#define TEST_COMPARE(f1, f2, ...)\
+		do {																\
+			std::cout << std::boolalpha;									\
+			std::cout														\
+				<< f1(__VA_ARGS__) << " == " << f2(__VA_ARGS__) << ": "		\
+				<< (f1(__VA_ARGS__) == f2(__VA_ARGS__)) << "\n";			\
+			std::cout << std::noboolalpha;									\
+		} while (false)		
 
 	#endif // DUCLIB_TESTING
 

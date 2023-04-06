@@ -24,7 +24,7 @@
     <ClInclude Include="src\utilities\template_traits.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\structures\vector.h">
+    <ClInclude Include="src\structures\vectorial.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="src\experimental\math_experimental.h">

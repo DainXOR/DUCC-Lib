@@ -6,6 +6,7 @@
 // #include <cmath>
 
 #include "../utilities/constrains.h"
+#include "../utilities/dmutils.h"
 
 namespace duc {
 
@@ -22,11 +23,21 @@ namespace duc {
 		{8464, 92}, {8649, 93}, {8836, 94}, {9025, 95}, {9216, 96}, {9409, 97}, {9604, 98}, {9801, 99}, {10000, 100}
 	};
 
+	// constexpr auto pow(const auto& base, const auto& exponent);
+
 	/// \Todo	Write a better algorithm
-	constexpr auto abs(const auto& num) {
+	constexpr auto abs(const require::Decimal auto& num) {
 		return num < 0 ? -num : num;
 	}
+	constexpr auto abs(const require::Integral auto& num) {
+		constexpr uint16_t CHARBIT = 8;
+		const uint16_t mask = num >> (sizeof(decltype(num)) * CHARBIT - 1);
+		return ((num + mask) ^ mask);
+	}
 
+	constexpr auto splitDecimal(const require::Real auto& num) {
+		return math_utils::pair_any{ int64_t(num), num - int64_t(num) };
+	}
 
 	constexpr int64_t ceil(const require::Decimal auto& number) {
 		int8_t negativeFix = (number < 0) * -1;
@@ -37,79 +48,67 @@ namespace duc {
 	}
 	constexpr int64_t floor(const require::Decimal auto& number) {
 		int8_t negativeFix = (number < 0) * -1;
-
 		return int64_t(number) + negativeFix;
 	}
 	constexpr int64_t round(const require::Decimal auto& number) {
-		return (number > 0 && number - int64_t(number) >= 0.5f) || 
+		return (number > 0 && number - int64_t(number) >= 0.5f) ||
 			number < 0 && duc::abs(number) - duc::abs(int64_t(number)) <= 0.5f ?
 
-			duc::ceil(number) : 
+			duc::ceil(number) :
 			duc::floor(number);
-
-		// number+	   >.5		abs<.5	|	R	|	D	|
-		//	  1			1		  1		|	1	|	1	|
-		//	  1			1		  0		|	1	|	1	|
-		//	  1			0		  1		|	1	|	0	| -> Error
-		//	  1			0		  0		|	0	|	0	|
-		//	  0			1		  1		|	1	|	1	|
-		//	  0			1		  0		|	0	|	0	|
-		//	  0			0		  1		|	1	|	1	|
-		// 	  0			0		  0		| 	0 	| 	0 	|
-		// 
-		// Neg && > .5 -> floor		false	|| false
-		// Neg && < .5 -> ceil		true	|| Saaa
-		// Pos && > .5 -> ceil		true	|| Saaa
-		// Pos && < .5 -> floor		false	|| false
-		//
 	}
-	constexpr int64_t round(const require::Decimal auto& number, const uint16_t& precition) {
-		using ntype = decltype(number);
+	constexpr double round(const require::Decimal auto& number, const uint16_t& precition) {
+		double decimals = duc::abs(number) - duc::abs(int64_t(number));
+		uint16_t mult = math_utils::powerPositiveInteger(10, precition);
 
-		auto dec = duc::abs(number - int64_t(number));
-		auto n = *(int*) &dec;
-		n <<= precition;
-		auto res = *(float*) &n;
-		std::cout << res;
+		decimals *= mult;
+		decimals = int64_t(decimals) / double(mult);
 
-		return number > 0 && duc::abs(number - int64_t(number)) > 0.5f ? duc::ceil(number) : duc::floor(number);
+		return int64_t(number) + decimals;
+	}
+	
+	constexpr double mod(const double& num, const double& div) {
+		int64_t mult = duc::floor(num / div);
+		return num - (div * mult);
 	}
 
 
+	///	\Todo	Implement efficient algorith for each power case.
 
-///	\Todo	Implement efficient algorith for each case
-	// Complex base, integral exponent
-	template<require::Complex base_t>
-	constexpr auto exp(const base_t& base, const require::Integral auto& exponent) {
-		if (exponent == 1 || base == 1)
-			return base;
+	constexpr double pow(const require::Real auto& base, const require::Integral auto& exponent) {
+		double result = 1;
 
-		base_t result = 1;
+		if (exponent > 0) {
+			if (exponent == 1 || base == 1)
+				return base;
 
-		auto expCopy = exponent;
-		auto baseCopy = base;
-		
-		while (expCopy > 0) {
-			if ((expCopy & 1) == 1) {// exp. is odd
-				result *= baseCopy;
-			}
-			baseCopy *= baseCopy;
-			expCopy >>= 1; // y = y / 2;
+			auto expCopy = exponent;
+			auto baseCopy = base;
+
+			return math_utils::powerPositiveInteger(baseCopy, expCopy);
 		}
-		return result;
+		
+		if (exponent == 0)
+			return result;
+
+		auto invBase = 1 / base;
+		auto posExp = -exponent;
+
+		return math_utils::powerPositiveInteger(invBase, posExp);
+		
 	}
 
 	// Complex base, complex exponent
-	template <require::Complex rhs_type, typename = std::enable_if<!require::Integral<rhs_type>, void>::type>
-	auto exp(const require::Complex auto& base, const rhs_type& exponent) {
+	// template <require::Decimal rhs_type, typename = std::enable_if<!require::Integral<rhs_type>, void>::type>
+	auto pow(const require::Real auto& base, const require::Decimal auto& exponent) {
 		return base * base;
 	}
 
-	// Complex base, arithmetic exponent
-	template <require::Arithmetic rhs_type, typename = std::enable_if<!(require::Integral<rhs_type> || require::Complex<rhs_type>), void>::type>
-	auto exp(const require::Complex auto& base, const rhs_type& exponent) {
-		return base * base * base;
-	}
+	//// Complex base, arithmetic exponent
+	//template <require::Arithmetic rhs_type, typename = std::enable_if<!(require::Integral<rhs_type> || require::Complex<rhs_type>), void>::type>
+	//auto pow(const require::Complex auto& base, const rhs_type& exponent) {
+	//	return base * base * base;
+	//}
 
 
 	constexpr float root(require::Real auto base, const require::Integral auto& exponent, double epsilon = 1e-4){
@@ -117,11 +116,11 @@ namespace duc {
 			return base;
 
 		float prev = 5;
-		float result = (1.0 / exponent) * ((exponent - 1) * prev + base / duc::exp(prev, exponent - 1));
+		float result = (1.0 / exponent) * ((exponent - 1) * prev + base / duc::pow(prev, exponent - 1));
 
 		while (duc::abs(prev - result) > epsilon) {
 			prev = result;
-			result = (1.0 / exponent) * ((exponent - 1) * prev + base / duc::exp(result, exponent - 1));
+			result = (1.0 / exponent) * ((exponent - 1) * prev + base / duc::pow(result, exponent - 1));
 		}
 
 		return result;
@@ -142,4 +141,5 @@ namespace duc {
 
 		return x;
 	}
+
 }

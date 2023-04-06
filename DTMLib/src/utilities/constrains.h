@@ -4,8 +4,8 @@
 #include <type_traits>
 
 #include "template_traits.h"
-
-namespace duc::require {
+// Conditions | 
+namespace duc::require { 
 
 	template<typename value_type>
 	concept Integral = std::is_integral_v<value_type> && !std::is_same_v<value_type, bool>;

@@ -1,5 +1,5 @@
 #pragma once
 
-#include "structures/vector.h"
+#include "structures/vectorial.h"
 
 #include "functions/arithmetic.h"
