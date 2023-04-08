@@ -112,15 +112,17 @@ namespace duc {
 
 
 	constexpr float root(require::Real auto base, const require::Integral auto& exponent, double epsilon = 1e-4){
-		if (exponent == 1 || base == 1)
+		if (exponent == 1 || base == 1 || base == 0)
 			return base;
 
+		const float invExponent = 1.f / exponent;
+
 		float prev = 5;
-		float result = (1.0 / exponent) * ((exponent - 1) * prev + base / duc::pow(prev, exponent - 1));
+		float result = invExponent * ((exponent - 1) * prev + base / duc::pow(prev, exponent - 1));
 
 		while (duc::abs(prev - result) > epsilon) {
 			prev = result;
-			result = (1.0 / exponent) * ((exponent - 1) * prev + base / duc::pow(result, exponent - 1));
+			result = invExponent * ((exponent - 1) * prev + base / duc::pow(result, exponent - 1));
 		}
 
 		return result;
@@ -129,7 +131,8 @@ namespace duc {
 
 /// \Note	Quake fast inverse square root
 /// \Effect	Be wary since this method uses some manipulation that leads to UB
-///			This method does not handle $x == 0
+///	\Warn	This method does not handle $x <= 0
+/// 
 	float fastInvSqrt(float x) {
 
 		float xhalf = 0.5f * x;

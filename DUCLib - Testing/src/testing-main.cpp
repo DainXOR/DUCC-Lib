@@ -2,6 +2,8 @@
 
 
 #include <structures/vectorial.h>
+#include <structures/polynomial.h>
+
 #include <functions/arithmetic.h>
 #include <utilities/dmutils.h>
 
@@ -24,8 +26,13 @@ using vp = duc::math_utils::vectorial_properties<vals...>;
 int main() {
     // srand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
     
-	TEST_FUNCTION(duc::abs(-4.324), 4.324);
+	TEST_FUNCTION(duc::fastInvSqrt(-5), INFINITY);
+	//TEST_FUNCTION();
+	auto[num, den] = duc::fraction<>::toFraction(5.4f);
 
+	duc::fraction<>::toFraction(5.4f) == duc::fraction({ 27, 5 });
+
+	std::cout << num << " / " << den << "\n";
 	
 	return 0;
 }
