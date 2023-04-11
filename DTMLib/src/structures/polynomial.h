@@ -91,7 +91,7 @@ namespace duc {
 
 		template<typename rhs_num, typename rhs_den>
 		bool operator==(const fraction<rhs_num, rhs_den>& rhs) {
-			this->equivalent(rhs, 1e-9);
+			return this->equivalent(rhs, 1e-9);
 		}
 
 		template<typename rhs_num, typename rhs_den>

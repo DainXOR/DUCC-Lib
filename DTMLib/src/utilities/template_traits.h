@@ -17,7 +17,8 @@ namespace duc::math_utils {
 	struct vectorial_properties {
 		constexpr static uint16_t	rank = str_rank<dims...>;
 		constexpr static size_t		size = str_size<dims...>;
-		constexpr static auto		dimentions = str_dimentions<dims...>;
+		constexpr static auto		shape = str_dimentions<dims...>;
 
 	};
+
 }

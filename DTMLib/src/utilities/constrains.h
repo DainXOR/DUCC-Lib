@@ -8,16 +8,16 @@
 namespace duc::require { 
 
 	template<typename value_type>
-	concept Integral = std::is_integral_v<value_type> && !std::is_same_v<value_type, bool>;
+	concept Integer = std::is_integral_v<value_type> && !std::is_same_v<value_type, bool>;
 
 	template<typename value_type>
-	concept UnsignedIntegral = Integral<value_type> && std::is_unsigned_v<value_type>;
+	concept UnsignedInteger = Integer<value_type> && std::is_unsigned_v<value_type>;
 
 	template<typename value_type>
 	concept Decimal = std::is_floating_point_v<value_type>;
 
 	template<typename value_type>
-	concept Real = Integral<value_type> || Decimal<value_type>;
+	concept Real = Integer<value_type> || Decimal<value_type>;
 
 	template<typename value_type>
 	concept Arithmetic = requires(value_type A, value_type B, double C) {
@@ -94,8 +94,8 @@ namespace duc::require {
 		math_utils::vectorial_properties<args...>::rank != 0;
 		math_utils::vectorial_properties<args...>::size != 0;
 
-		math_utils::vectorial_properties<args...>::dimentions[n];
-		math_utils::vectorial_properties<args...>::dimentions.size();
+		math_utils::vectorial_properties<args...>::shape[n];
+		math_utils::vectorial_properties<args...>::shape.size();
 	};
 
 	template<typename space_t>

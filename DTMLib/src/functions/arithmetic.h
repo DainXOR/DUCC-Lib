@@ -29,7 +29,7 @@ namespace duc {
 	constexpr auto abs(const require::Decimal auto& num) {
 		return num < 0 ? -num : num;
 	}
-	constexpr auto abs(const require::Integral auto& num) {
+	constexpr auto abs(const require::Integer auto& num) {
 		constexpr uint16_t CHARBIT = 8;
 		const uint16_t mask = num >> (sizeof(decltype(num)) * CHARBIT - 1);
 		return ((num + mask) ^ mask);
@@ -75,7 +75,7 @@ namespace duc {
 
 	///	\Todo	Implement efficient algorith for each power case.
 
-	constexpr double pow(const require::Real auto& base, const require::Integral auto& exponent) {
+	constexpr double pow(const require::Real auto& base, const require::Integer auto& exponent) {
 		double result = 1;
 
 		if (exponent > 0) {
@@ -99,19 +99,19 @@ namespace duc {
 	}
 
 	// Complex base, complex exponent
-	// template <require::Decimal rhs_type, typename = std::enable_if<!require::Integral<rhs_type>, void>::type>
+	// template <require::Decimal rhs_type, typename = std::enable_if<!require::Integer<rhs_type>, void>::type>
 	auto pow(const require::Real auto& base, const require::Decimal auto& exponent) {
 		return base * base;
 	}
 
 	//// Complex base, arithmetic exponent
-	//template <require::Arithmetic rhs_type, typename = std::enable_if<!(require::Integral<rhs_type> || require::Complex<rhs_type>), void>::type>
+	//template <require::Arithmetic rhs_type, typename = std::enable_if<!(require::Integer<rhs_type> || require::Complex<rhs_type>), void>::type>
 	//auto pow(const require::Complex auto& base, const rhs_type& exponent) {
 	//	return base * base * base;
 	//}
 
 
-	constexpr float root(require::Real auto base, const require::Integral auto& exponent, double epsilon = 1e-4){
+	constexpr float root(require::Real auto base, const require::Integer auto& exponent, double epsilon = 1e-4){
 		if (exponent == 1 || base == 1 || base == 0)
 			return base;
 

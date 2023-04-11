@@ -67,5 +67,22 @@ namespace duc::math_utils {
 
 		return multipliersArray;
 	}
+	
+	constexpr bool isTensorsShapeCompatible(const auto& rank1, const auto& shape1, const auto& shape2) noexcept {
+		for (int i = 0; i < rank1; i++) {
+			if (shape1[i] != shape2[i]) {
+				if (shape1[i] != 1 && shape2[i] != 1) {
+					// dimensions are not compatible for summation
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+
+
+
+
 
 }
