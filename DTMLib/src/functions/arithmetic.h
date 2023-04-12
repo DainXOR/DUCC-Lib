@@ -1,12 +1,10 @@
 #pragma once
-#include <type_traits>
-#include <iostream>
 #include <unordered_map>
 
 // #include <cmath>
 
 #include "../utilities/constrains.h"
-#include "../utilities/dmutils.h"
+#include "../utilities/mutils.h"
 
 namespace duc {
 
@@ -26,40 +24,55 @@ namespace duc {
 	// constexpr auto pow(const auto& base, const auto& exponent);
 
 	/// \Todo	Write a better algorithm
-	constexpr auto abs(const require::Decimal auto& num) {
+	constexpr auto abs(require::Decimal auto num) {
 		return num < 0 ? -num : num;
 	}
-	constexpr auto abs(const require::Integer auto& num) {
+	constexpr auto abs(require::Integer auto num) {
 		constexpr uint16_t CHARBIT = 8;
-		const uint16_t mask = num >> (sizeof(decltype(num)) * CHARBIT - 1);
+		const int64_t mask = num >> (sizeof(decltype(num)) * CHARBIT - 1);
 		return ((num + mask) ^ mask);
 	}
 
-	constexpr auto splitDecimal(const require::Real auto& num) {
-		return math_utils::pair_any{ int64_t(num), num - int64_t(num) };
+	constexpr int64_t min(int64_t x, int64_t y) {
+		return y ^ ((x ^ y) & -(x < y));
+	}
+	constexpr int64_t max(int64_t x, int64_t y) {
+		return x ^ ((x ^ y) & -(x < y));
 	}
 
-	constexpr int64_t ceil(const require::Decimal auto& number) {
+	constexpr auto splitDecimal(require::Real auto num) {
+		return math_utils::pair_any{ int64_t(num), num - int64_t(num) };
+	}
+	constexpr uint16_t digits(int64_t num) {
+		int i = 0;
+		do{
+			num /= 10;
+			i++;
+		} while (num != 0);
+		return i;
+	}
+
+	constexpr int64_t ceil(require::Decimal auto number) {
 		int8_t negativeFix = (number < 0) * -1;
 		int8_t negativeSign = 1 + (number < 0) * -2;
 		auto absNum = duc::abs(number);
 
 		return negativeSign * int64_t(absNum + negativeFix + 1);
 	}
-	constexpr int64_t floor(const require::Decimal auto& number) {
+	constexpr int64_t floor(require::Decimal auto number) {
 		int8_t negativeFix = (number < 0) * -1;
 		return int64_t(number) + negativeFix;
 	}
-	constexpr int64_t round(const require::Decimal auto& number) {
+	constexpr int64_t round(require::Decimal auto number) {
 		return (number > 0 && number - int64_t(number) >= 0.5f) ||
 			number < 0 && duc::abs(number) - duc::abs(int64_t(number)) <= 0.5f ?
 
 			duc::ceil(number) :
 			duc::floor(number);
 	}
-	constexpr double round(const require::Decimal auto& number, const uint16_t& precition) {
+	constexpr double round(require::Decimal auto number, uint16_t precision) {
 		double decimals = duc::abs(number) - duc::abs(int64_t(number));
-		uint16_t mult = math_utils::powerPositiveInteger(10, precition);
+		uint16_t mult = math_utils::powerPositiveInteger(10, precision);
 
 		decimals *= mult;
 		decimals = int64_t(decimals) / double(mult);
@@ -71,7 +84,6 @@ namespace duc {
 		int64_t mult = duc::floor(num / div);
 		return num - (div * mult);
 	}
-
 
 	///	\Todo	Implement efficient algorith for each power case.
 
@@ -143,6 +155,59 @@ namespace duc {
 		x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
 
 		return x;
+	}
+
+
+
+
+	constexpr char* toChars(int64_t num) {
+		char* numString = new char[32];
+		const uint16_t NumLenght = digits(num);
+		bool isPositive = num >= 0;
+		num = duc::abs(num);
+
+		for (int i = NumLenght - isPositive; i >= 0; i--, num /= 10) {
+			numString[i] = (num % 10) + '0';
+		}
+
+		!isPositive ? numString[0] = '-' : 0;
+		numString[NumLenght + !isPositive] = '\0';
+
+		return numString;
+	}
+	constexpr char* toChars(double num, uint16_t precision) {
+		auto [integer, decimals] = duc::splitDecimal(num);
+		decimals = duc::abs(decimals);
+		int64_t intDecimals = int64_t(decimals * duc::pow(10, precision));
+		bool isNegative = num < 0;
+
+		char* numString = nullptr;
+
+		if(integer == 0 && isNegative){
+			numString = new char[32];
+			numString[0] = '-';
+			numString[1] = '0';
+			numString[2] = '\0';
+		}
+		else {
+			numString = duc::toChars(integer);
+		}
+
+
+		char* decString = duc::toChars(intDecimals);
+		uint16_t intSize = duc::digits(integer) + isNegative;
+
+		numString[intSize++] = '.';
+
+		for (int i = 0; i < precision; i++) {
+			numString[intSize + i] = decString[i];
+		}
+
+		delete[] decString;
+
+		numString[intSize + precision] = '\0';
+
+		return numString;
 	}
 
 }

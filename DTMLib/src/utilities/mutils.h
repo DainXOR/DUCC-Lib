@@ -40,7 +40,7 @@ namespace duc::math_utils {
 /// \Warn	This function modify its parameters.
 /// \Return Returns the $base multiply by itself $exponent times.
 /// 
-	constexpr double powerPositiveInteger(int64_t base, int64_t exponent) noexcept {
+	constexpr double powerPositiveInteger(uint64_t base, uint64_t exponent) noexcept {
 		double result = 1;
 
 		while (exponent > 0) {
@@ -54,8 +54,7 @@ namespace duc::math_utils {
 	}
 
 	template <typename size_type, size_t size>
-	constexpr std::array<size_type, size>
-		calculateMultipliers(const auto& values) noexcept {
+	constexpr auto calculateMultipliers(const auto& values) noexcept {
 
 		std::array<size_type, size> multipliersArray{};
 		
@@ -80,7 +79,7 @@ namespace duc::math_utils {
 		return true;
 	}
 
-
+	
 
 
 

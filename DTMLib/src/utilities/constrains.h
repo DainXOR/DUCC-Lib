@@ -8,7 +8,7 @@
 namespace duc::require { 
 
 	template<typename value_type>
-	concept Integer = std::is_integral_v<value_type> && !std::is_same_v<value_type, bool>;
+	concept Integer = std::_Is_nonbool_integral<value_type>; // std::is_integral_v<value_type> && !std::is_same_v<std::remove_cv_t<value_type>, bool>;
 
 	template<typename value_type>
 	concept UnsignedInteger = Integer<value_type> && std::is_unsigned_v<value_type>;

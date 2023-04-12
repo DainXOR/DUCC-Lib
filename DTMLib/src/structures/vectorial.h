@@ -5,6 +5,7 @@
 #include <math.h>
 
 #include "../utilities/constrains.h"
+#include "../functions/arithmetic.h"
 
 #include <macro_tools.h>
 
@@ -27,18 +28,18 @@ namespace duc{
 		using dim_t = decltype(r);
 		using properties = math_utils::vectorial_properties<r>;
 
-		// std::array<type, r> buffer = {};
-		// std::conditional_t<r && (r < (((1 << 16) - 1) / sizeof(value_type))),
 		using buffer_type = std::conditional_t< r && (r < (((1 << 6) - 1) / sizeof(type))),
 			std::array<type, r>, 
 			std::vector<type>>;
 
+
+
 		buffer_type buffer = { 0 };
 
 	public:
-		constexpr size_t rank() const noexcept { return 1; }
-		constexpr size_t size() const noexcept { return r; }
-		constexpr size_t dimention() const noexcept { return this->size(); }
+		constexpr size_t rank()			DUC_CONST_RNOEXCEPT { return 1; }
+		constexpr size_t size()			DUC_CONST_RNOEXCEPT { return r; }
+		constexpr size_t dimention()	DUC_CONST_RNOEXCEPT { return this->size(); }
 
 		constexpr double fastMagnitude() const noexcept {
 			type acumulator{};
@@ -54,50 +55,165 @@ namespace duc{
 		constexpr double norm() const noexcept {
 			return sqrt(this->fastMagnitude());
 		}
+		constexpr double fastNorm() const noexcept {
+			return fastInvSqrt(this->fastMagnitude());
+		}
 
-		constexpr type dotProduct(const require::Vector auto& other) const noexcept;
+		constexpr type dotProduct(const require::Vector auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
 
-		constexpr vector& normalize() noexcept;
+			type result = 0;
+			for (int i = 0; i < this->size(); i++) {
+				result += buffer[i] * other[i];
+			}
+
+			return result;
+		}
+
+		constexpr vector& normalize() DUC_RNOEXCEPT {
+			return *this /= norm();
+		}
+		constexpr vector& fastNormalize() DUC_RNOEXCEPT {
+			return *this /= fastNorm();
+		}
+
 		constexpr vector& hadamardProduct(const require::Vector auto& other);
 		constexpr vector& crossProduct(const require::Vector auto& other);
 
 		constexpr matrix<type, r, r> outerProduct(const require::Vector auto& other) const ;
 
-		constexpr vector &operator+(const require::Vector auto& other) noexcept {}
-		constexpr vector &operator-(const require::Vector auto& other) noexcept {}
-		constexpr vector &operator*(const require::Vector auto& other) noexcept {}
-		constexpr vector &operator/(const require::Vector auto& other) noexcept {}
-
-		constexpr vector &operator+(const require::Real auto& scalar) noexcept {}
-		constexpr vector &operator-(const require::Real auto& scalar) noexcept {}
-		constexpr vector &operator*(const require::Real auto& scalar) noexcept {}
-		constexpr vector &operator/(const require::Real auto& scalar) noexcept {}
-
-
-		constexpr type &operator[](const require::Integer auto& index) noexcept {
-			#ifndef NDEBUG
-			if (index >= this->size()) {
-				return type();
+		template<typename other_type>
+		constexpr vector<type, r> operator+(const vector<other_type, r>& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
+			
+			vector<type, r> result;
+			for (int i = 0; i < this->size(); i++) {
+				result[i] = buffer[i] + type(other[i]);
 			}
-			#endif
-
-			return this->buffer[index];
+			return result;
 		}
-		constexpr const type &operator[](const require::Integer auto& index) const noexcept {
-			#ifndef NDEBUG
-			if (index >= this->size()) {
-				return type();
+		template<typename other_type>
+		constexpr vector<type, r> operator-(const vector<other_type, r>& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
+			
+			vector<type, r> result;
+			for (int i = 0; i < this->size(); i++) {
+				result[i] = buffer[i] - type(other[i]);
 			}
-			#endif
+			return result;
+		}
+		template<typename other_type>
+		constexpr vector<type, r> operator*(const vector<other_type, r>& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
 
-			return this->buffer[index];
+			vector<type, r> result;
+			for (int i = 0; i < this->size(); i++) {
+				result[i] = buffer[i] * type(other[i]);
+			}
+			return result;
+		}
+		template<typename other_type>
+		constexpr vector<type, r> operator/(const vector<other_type, r>& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
+
+			vector<type, r> result;
+			for (int i = 0; i < this->size(); i++) {
+				result[i] = buffer[i] / type(other[i]);
+			}
+			return result;
 		}
 
-		auto at(const require::Integer auto& index) {
-			if (index < 0)
-				return this->buffer.at(this->size() - index);
+		constexpr vector<type, r> operator+(require::Real auto scalar) DUC_CONST_RNOEXCEPT {
+			vector<type, r> result;
+			for (int i = 0; i < size(); i++) {
+				result[i] = buffer[i] + scalar;
+			}
+			return result;
+		}
+		constexpr vector<type, r> operator-(require::Real auto scalar) DUC_CONST_RNOEXCEPT {
+			vector<type, r> result;
+			for (int i = 0; i < size(); i++) {
+				result[i] = buffer[i] - scalar;
+			}
+			return result;
+		}
+		constexpr vector<type, r> operator*(require::Real auto scalar) DUC_CONST_RNOEXCEPT {
+			vector<type, r> result;
+			for (int i = 0; i < size(); i++) {
+				result[i] = buffer[i] * scalar;
+			}
+			return result;
+		}
+		constexpr vector<type, r> operator/(require::Real auto scalar) DUC_CONST_RNOEXCEPT {
+			vector<type, r> result;
+			for (int i = 0; i < size(); i++) {
+				result[i] = buffer[i] / scalar;
+			}
+			return result;
+		}
 
-			return this->buffer.at(index);
+		template<typename other_type>
+		constexpr vector<type, r>& operator+=(const vector<other_type, r>& other) DUC_RNOEXCEPT {
+			*this = (*this) + other;
+			return *this;
+		}
+		template<typename other_type>
+		constexpr vector<type, r>& operator-=(const vector<other_type, r>& other) DUC_RNOEXCEPT {
+			*this = (*this) - other;
+			return *this;
+		}
+		template<typename other_type>
+		constexpr vector<type, r>& operator*=(const vector<other_type, r>& other) DUC_RNOEXCEPT {
+			*this = (*this) * other;
+			return *this;
+		}
+		template<typename other_type>
+		constexpr vector<type, r>& operator/=(const vector<other_type, r>& other) DUC_RNOEXCEPT {
+			*this = (*this) / other;
+			return *this;
+		}
+
+		constexpr vector<type, r>& operator+=(require::Real auto scalar) DUC_RNOEXCEPT {
+			*this = (*this) + scalar;
+			return *this;
+		}
+		constexpr vector<type, r>& operator-=(require::Real auto scalar) DUC_RNOEXCEPT {
+			*this = (*this) - scalar;
+			return *this;
+		}
+		constexpr vector<type, r>& operator*=(require::Real auto scalar) DUC_RNOEXCEPT {
+			*this = (*this) * scalar;
+			return *this;
+		}
+		constexpr vector<type, r>& operator/=(require::Real auto scalar) DUC_RNOEXCEPT {
+			*this = (*this) / scalar;
+			return *this;
+		}
+
+		constexpr vector<type, r> operator-() DUC_RNOEXCEPT {
+			return (*this) - ((*this) * 2);
+		}
+
+
+		constexpr type &operator[](const require::Integer auto& index) DUC_RNOEXCEPT {
+			DUC_TEST_ERROR(index < size(), std::out_of_range, "Index out of bounds.");
+
+			return buffer[index];
+		}
+		constexpr const type& operator[](const require::Integer auto& index) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(index < size(), std::out_of_range, "Index out of bounds.");
+
+			return buffer[index];
+		}
+
+		constexpr type& at(const require::Integer auto& index) {
+			if (index >= size())
+				throw std::out_of_range("Index out of bounds.");
+
+			if (index < 0 && duc::abs(index) < size() - 1)
+				return buffer.at(this->size() - index);
+
+			return buffer.at(index);
 		}
 		auto front() {
 			return this->buffer.front();
@@ -163,7 +279,7 @@ namespace duc{
 
 		// std::vector<type> mp_buffer = std::vector<type>(tp::size);
 
-		using buffer_type = std::conditional_t< properties::rank && (properties::size < (((1 << 32) - 1) / sizeof(type))),
+		using buffer_type = std::conditional_t< properties::rank && (properties::size < (((1ull << 32ull) - 1) / sizeof(type))),
 			std::array<type, properties::size>,
 			std::vector<type>>;
 
@@ -174,7 +290,7 @@ namespace duc{
 
 		constexpr size_t size()	DUC_CONST_RNOEXCEPT		{ return properties::size; }
 		constexpr uint16_t rank() DUC_CONST_RNOEXCEPT	{ return properties::rank; }
-		constexpr auto shape() DUC_CONST_RNOEXCEPT	{ return properties::shape; }
+		constexpr auto shape() DUC_CONST_RNOEXCEPT		{ return properties::shape; }
 		constexpr size_t dimention(const require::Integer auto& rankPos) DUC_CONST_RNOEXCEPT {
 			DUC_TEST_ERROR((rankPos > properties::rank) || (rankPos < 0), std::out_of_range, "Rank outside tensor.\n");
 
@@ -184,20 +300,20 @@ namespace duc{
 		// > Access functions and operators
 
 		constexpr type& operator [](size_t index) DUC_RNOEXCEPT {
-			DUC_TEST_ERROR(index >= size(), std::out_of_range, "The index is outside the tensor. (Max = " + std::to_string(size() - 1) + ")");
+			DUC_TEST_ERROR(index >= size(), std::out_of_range, "The index is outside the tensor. (Max = " + duc::toChars(size() - 1) + ")");
 
 			return buffer[index];
 		}
 		[[nodiscard]] constexpr const type& operator [](size_t index) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR(index >= size(), std::out_of_range, "The index is outside the tensor. (Max = " + std::to_string(size() - 1) + ")");
+			DUC_TEST_ERROR(index < size(), std::out_of_range, "The index is outside the tensor. (Max = " + duc::toChars(size() - 1) + ")");
 
 			return buffer[index];
 		}
 
-		constexpr type& operator()(require::UnsignedInteger auto... indexes) DUC_RNOEXCEPT {
+		constexpr type& operator()(require::Integer auto... indexes) DUC_RNOEXCEPT {
 
 			constexpr uint16_t IndexCount = sizeof...(indexes);
-			DUC_TEST_ERROR(!IndexCount, std::invalid_argument, "No indexes provided.\n");
+			DUC_TEST_ERROR(IndexCount, std::invalid_argument, "No indexes provided.");
 			DUC_TEST_ERROR(IndexCount <= rank(), std::out_of_range, "Amount of indexes provided exceed the tensor rank.");
 
 			constexpr std::array<size_t, IndexCount> IndexesArray = { indexes... };
@@ -205,11 +321,8 @@ namespace duc{
 			size_t index = 0;
 
 			for (uint16_t i = 0; i <= rank(); i++) {
-				DUC_TEST_ERROR(IndexesArray[i] >= dimention(i), std::out_of_range,
-						 "The index is outside the tensor."
-						 "\n(Max =" + std::to_string(dimention(i) - 1) + ","
-						 " Attempted[" + std::to_string(IndexesArray[i]) + "])"
-				);
+				DUC_TEST_ERROR(IndexesArray[i] < 0, std::invalid_argument, "Negative indexes are not allowed.");
+				DUC_TEST_ERROR(IndexesArray[i] < dimention(i), std::out_of_range, "The index is outside the tensor.\n(Max =" + duc::toChars(dimention(i) - 1) + ", Attempted[" + duc::toChars(IndexesArray[i]) + "])");
 
 				index += IndexesArray[i] * Multipliers[i];
 			}
@@ -263,7 +376,7 @@ namespace duc{
 
 			return this;
 		}
-		tensor& operator+(const auto& scalar) {
+		tensor& operator+(require::Real auto scalar) {
 			for (size_t i = 0; i < this->size(); i++) {
 				buffer[i] += scalar;
 			}
@@ -284,7 +397,7 @@ namespace duc{
 
 			return this;
 		}
-		tensor& operator-(const auto& scalar) {
+		tensor& operator-(require::Real auto scalar) {
 			for (size_t i = 0; i < this->size(); i++) {
 				buffer[i] -= scalar;
 			}

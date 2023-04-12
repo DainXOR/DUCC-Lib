@@ -3,7 +3,7 @@
 #include "arithmetic.h"
 
 #include "../utilities/constrains.h"
-#include "../utilities/dmutils.h"
+#include "../utilities/mutils.h"
 
 namespace duc {
 

@@ -30,7 +30,7 @@
     <ClInclude Include="src\experimental\math_experimental.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\dmutils.h">
+    <ClInclude Include="src\utilities\mutils.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="src\functions\arithmetic.h">

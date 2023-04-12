@@ -31,7 +31,7 @@
 			#define DUC_NOTHING(...)
 			#define DUC_MESSAGE(logType, message)	DUC_ ## logType ## _LOG(message, std::exception)
 			#define DUC_ERROR_MESSAGE(std_err, message)	DUC_ERROR_LOG(message, std_err)
-			#define DUC_TEST_RESULT(expression, expected, success, sreturn, error, ereturn)	[](){ if((expression) == expected){ success; return sreturn; } else{error; return ereturn; } }()
+			#define DUC_TEST_RESULT(expression, expected, success, sreturn, error, ereturn)	[](auto leftExp, auto rightExp){ if((leftExp) == rightExp){ success; return sreturn; } else{error; return ereturn; } }(expression, expected)
 
 
 			#define DUC_TEST(expression, errLevel, msg) DUC_TEST_RESULT(expression, true, DUC_NOTHING(), DUC_NOTHING(), DUC_MESSAGE(errLevel, msg), DUC_NOTHING())
@@ -40,14 +40,22 @@
 
 
 #if _DUCLIB_DEBUG_LEVEL >= 1
+			#undef DUC_INFO_LOG
+			#undef DUC_INFO_PAUSE
+
 			#define DUC_INFO_LOG(x, ...)					std::cout << "[DEBUG INFO]: " << x << "\n"
 			#define DUC_INFO_PAUSE(x, ...)					std::cout << "[INFO PAUSE]:" << x << "\n"; std::cin.get()
 
 #if _DUCLIB_DEBUG_LEVEL >= 2
+			#undef DUC_WARN_LOG
+			#undef DUC_WARN_PAUSE
+
 			#define DUC_WARN_LOG(x, ...)					std::cout << "[DEBUG WARN]: " << x << "\n"
 			#define DUC_WARN_PAUSE(x, ...)					std::cout << "[WARN PAUSE]:" << x << "\n"; std::cin.get()
 
 #if _DUCLIB_DEBUG_LEVEL >= 3
+			#undef DUC_ERROR_LOG
+			#undef DUC_ERROR_PAUSE
 			
 			#define DUC_ERROR_LOG(x, std_err, ...)			std::cout << "[DEBUG ERROR]: " << x << "\n"; throw std_err(x)
 			#define DUC_ERROR_PAUSE(x)						std::cout << "[ERROR PAUSE]:" << x << "\n"; std::cin.get(); throw std_err(x)

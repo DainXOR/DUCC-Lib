@@ -16,9 +16,14 @@ std::vector<std::tuple<Args...>> generateRandomNumbers(int n, std::array<Args, 2
 	std::vector<std::tuple<Args...>> inputs(n);
 
 	auto generate_random_arg = [&](auto min, auto max) {
+		using min_type = decltype(min);
+		using max_type = decltype(max);
+
 		if (min == max) { // Check if limits are equal
-			std::uniform_int_distribution<> dist(std::numeric_limits<decltype(min)>::min(),
-												 std::numeric_limits<decltype(max)>::max());
+			std::uniform_int_distribution<> dist(	
+				std::numeric_limits<min_type>::min(),
+				std::numeric_limits<max_type>::max());
+
 			return static_cast<decltype(min)>(dist(gen));
 		}
 		else {
