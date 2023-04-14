@@ -2,7 +2,9 @@
 
 #ifdef ENABLE_EXPERIMENTAL_MACROS
 
+#define CONCAT(x, y) x ## y
 #define X(before,after,arg) before arg ## after
+#define Y(arg) arg
 
 #define PP_NARG(...)    PP_NARG_(__VA_ARGS__,PP_RSEQ_N())
 #define PP_NARG_(...)   PP_ARG_N(__VA_ARGS__)
@@ -66,8 +68,29 @@
 #define APPLYX8 (before,after,a,b,c,d,e,f,g,h) X(before,after,a) X(before,after,b) X(before,after,c) X(before,after,d) X(before,after,e) X(before,after,f) X(before,after,g) X(before,after,h)
 #define APPLYX9 (before,after,a,b,c,d,e,f,g,h,i) X(before,after,a) X(before,after,b) X(before,after,c) X(before,after,d) X(before,after,e) X(before,after,f) X(before,after,g) X(before,after,h) X(before,after,i)
 
+//#define APPLYY1 (a)                     Y(a)
+//#define APPLYY2 (a,b)                   Y(a) Y(b)
+//#define APPLYY3 (a,b,c)                 Y(a) Y(b) Y(c)
+//#define APPLYY4 (a,b,c,d)               Y(a) Y(b) Y(c) Y(d)
+//#define APPLYY5 (a,b,c,d,e)             Y(a) Y(b) Y(c) Y(d) Y(e)
+//#define APPLYY6 (a,b,c,d,e,f)           Y(a) Y(b) Y(c) Y(d) Y(e) Y(f)
+//#define APPLYY7 (a,b,c,d,e,f,g)         Y(a) Y(b) Y(c) Y(d) Y(e) Y(f) Y(g)
+//#define APPLYY8 (a,b,c,d,e,f,g,h)       Y(a) Y(b) Y(c) Y(d) Y(e) Y(f) Y(g) Y(h)
+//#define APPLYY9 (a,b,c,d,e,f,g,h,i)     Y(a) Y(b) Y(c) Y(d) Y(e) Y(f) Y(g) Y(h) Y(i)
+
+//#define CONCAT1 (a)                     Y(a)
+//#define CONCAT2 (a,b)                   Y(a) Y(b)
+//#define CONCAT3 (a,b,c)                 Y(a) Y(b) Y(c)
+//#define CONCAT4 (a,b,c,d)               Y(a) Y(b) Y(c) Y(d)
+//#define CONCAT5 (a,b,c,d,e)             Y(a) Y(b) Y(c) Y(d) Y(e)
+//#define CONCAT6 (a,b,c,d,e,f)           Y(a) Y(b) Y(c) Y(d) Y(e) Y(f)
+//#define CONCAT7 (a,b,c,d,e,f,g)         Y(a) Y(b) Y(c) Y(d) Y(e) Y(f) Y(g)
+//#define CONCAT8 (a,b,c,d,e,f,g,h)       Y(a) Y(b) Y(c) Y(d) Y(e) Y(f) Y(g) Y(h)
+//#define CONCAT9 (a,b,c,d,e,f,g,h,i)     Y(a) Y(b) Y(c) Y(d) Y(e) Y(f) Y(g) Y(h) Y(i)
+
 #define APPLYX_s(M, ...) M(__VA_ARGS__)
 #define APPLYX_(M, before, after, ...) M(before, after, __VA_ARGS__)
+#define APPLYY_(M, ...) M(__VA_ARGS__)
 
 #define APPLYXn_s(...) APPLYX_s(XPASTE(APPLYX, PP_NARG(__VA_ARGS__)), __VA_ARGS__)
 #define APPLYXn(before, after, ...) APPLYX_(XPASTE(APPLYX, PP_NARG(__VA_ARGS__)), before, after, __VA_ARGS__)
@@ -76,5 +99,11 @@
 #define USE_N(element, times) XUSE(element, times)
 // #define NAMESPACES(...) APPLYXn(namespace, {, __VA_ARGS__)
 // #define CLOSEXn(times) APPLYX_s(XPASTE(PASTEX, times), })
+
+// #define DUC_CONCAT(x, y) x ## y
+// #define DUC_CONCAT(x, ...) x ## __VA_ARGS__
+// #define CONCATXN
+
+//#define DUC_CONCAT(...) APPLYY_(XPASTE(APPLYY, PP_NARG(__VA_ARGS__)), __VA_ARGS__)
 
 #endif // ENABLE_EXPERIMENTAL_MACROS

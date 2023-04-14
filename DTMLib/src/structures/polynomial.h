@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../functions/arithmetic.h"
-#include "../functions/algorithm.h"
 
 #include "../utilities/constrains.h"
 #include "../utilities/mutils.h"
@@ -14,7 +13,15 @@ namespace duc {
 		using num_type = type1;
 		using den_type = type2;
 
-		constexpr auto toDecimal() const noexcept {
+		num_type numerator;
+		den_type denominator;
+
+	public:
+		constexpr bool checkDenominator() const noexcept {
+			return this->denominator != 0;
+		}
+
+		constexpr num_type toDecimal() const noexcept {
 			return this->numerator / this->denominator;
 		}
 
@@ -40,10 +47,7 @@ namespace duc {
 		fraction operator+(const require::Real auto& rhs) const noexcept {
 			return this + fraction<num_type, den_type>::toFraction(rhs);
 		}
-
-	public:
-		num_type numerator;
-		den_type denominator;
+		
 	};
 
 	template<require::Real num_type = double, require::Real den_type = double>
@@ -101,12 +105,7 @@ namespace duc {
 		return { resultNum , resultDen };
 	}
 
-	template<typename rhs_num, typename rhs_den>
-	auto toDecimal(const fraction<rhs_num, rhs_den>& number) DUC_RNOEXCEPT {
-		return number.numerator / number.denominator;
-	}
-
-	template<typename type>
+	template<require::Complex type = double>
 	class polynomial {
 	public:
 		using ec_type = char*;

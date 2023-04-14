@@ -40,7 +40,7 @@ namespace duc::math_utils {
 /// \Warn	This function modify its parameters.
 /// \Return Returns the $base multiply by itself $exponent times.
 /// 
-	constexpr double powerPositiveInteger(uint64_t base, uint64_t exponent) noexcept {
+	constexpr double powerPositiveInteger(double base, uint64_t exponent) noexcept {
 		double result = 1;
 
 		while (exponent > 0) {

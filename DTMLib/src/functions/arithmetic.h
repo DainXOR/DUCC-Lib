@@ -33,6 +33,14 @@ namespace duc {
 		return ((num + mask) ^ mask);
 	}
 
+	constexpr uint16_t digits(int64_t num) {
+		int i = 0;
+		do {
+			num /= 10;
+			i++;
+		} while (num != 0);
+		return i;
+	}
 	constexpr int64_t min(int64_t x, int64_t y) {
 		return y ^ ((x ^ y) & -(x < y));
 	}
@@ -43,15 +51,7 @@ namespace duc {
 	constexpr auto splitDecimal(require::Real auto num) {
 		return math_utils::pair_any{ int64_t(num), num - int64_t(num) };
 	}
-	constexpr uint16_t digits(int64_t num) {
-		int i = 0;
-		do{
-			num /= 10;
-			i++;
-		} while (num != 0);
-		return i;
-	}
-
+	
 	constexpr int64_t ceil(require::Decimal auto number) {
 		int8_t negativeFix = (number < 0) * -1;
 		int8_t negativeSign = 1 + (number < 0) * -2;
@@ -85,59 +85,51 @@ namespace duc {
 		return num - (div * mult);
 	}
 
+	constexpr auto greatestCommonDivisor(const auto& a, const auto& b) {
+		return b == 0 ? a : duc::greatestCommonDivisor(b, duc::mod(a, b));
+	}
+
 	///	\Todo	Implement efficient algorith for each power case.
 
-	constexpr double pow(const require::Real auto& base, const require::Integer auto& exponent) {
-		double result = 1;
-
+	constexpr double pow(require::Real auto base, const require::Integer auto& exponent) {
 		if (exponent > 0) {
 			if (exponent == 1 || base == 1)
 				return base;
 
-			auto expCopy = exponent;
-			auto baseCopy = base;
-
-			return math_utils::powerPositiveInteger(baseCopy, expCopy);
+			return math_utils::powerPositiveInteger(base, exponent);
 		}
 		
 		if (exponent == 0)
-			return result;
+			return 1;
 
-		auto invBase = 1 / base;
-		auto posExp = -exponent;
-
-		return math_utils::powerPositiveInteger(invBase, posExp);
+		return math_utils::powerPositiveInteger(1 / base, -exponent);
 		
 	}
-
-	// Complex base, complex exponent
-	// template <require::Decimal rhs_type, typename = std::enable_if<!require::Integer<rhs_type>, void>::type>
-	auto pow(const require::Real auto& base, const require::Decimal auto& exponent) {
+	constexpr double pow(require::Real auto base, const require::Decimal auto& exponent) {
 		return base * base;
 	}
 
 	//// Complex base, arithmetic exponent
-	//template <require::Arithmetic rhs_type, typename = std::enable_if<!(require::Integer<rhs_type> || require::Complex<rhs_type>), void>::type>
-	//auto pow(const require::Complex auto& base, const rhs_type& exponent) {
+	//auto pow(require::StrictComplex auto base, const require::Real auto& exponent) {
 	//	return base * base * base;
 	//}
 
-
-	constexpr float root(require::Real auto base, const require::Integer auto& exponent, double epsilon = 1e-4){
+	template<require::Real real_type>
+	constexpr double root(real_type base, const require::Integer auto& exponent, double epsilon = 1e-4){
 		if (exponent == 1 || base == 1 || base == 0)
 			return base;
 
-		const float invExponent = 1.f / exponent;
+		const float invExponent = 1.0f / float(exponent);
 
-		float prev = 5;
-		float result = invExponent * ((exponent - 1) * prev + base / duc::pow(prev, exponent - 1));
+		real_type prev = 5;
+		real_type result = invExponent * ((exponent - 1) * prev + base / duc::pow(prev, exponent - 1));
 
 		while (duc::abs(prev - result) > epsilon) {
 			prev = result;
 			result = invExponent * ((exponent - 1) * prev + base / duc::pow(result, exponent - 1));
 		}
 
-		return result;
+		return static_cast<double>(result);
 	}
 
 
@@ -155,59 +147,6 @@ namespace duc {
 		x = x * (1.5f - xhalf * x * x); // Newton step, repeating increases accuracy
 
 		return x;
-	}
-
-
-
-
-	constexpr char* toChars(int64_t num) {
-		char* numString = new char[32];
-		const uint16_t NumLenght = digits(num);
-		bool isPositive = num >= 0;
-		num = duc::abs(num);
-
-		for (int i = NumLenght - isPositive; i >= 0; i--, num /= 10) {
-			numString[i] = (num % 10) + '0';
-		}
-
-		!isPositive ? numString[0] = '-' : 0;
-		numString[NumLenght + !isPositive] = '\0';
-
-		return numString;
-	}
-	constexpr char* toChars(double num, uint16_t precision) {
-		auto [integer, decimals] = duc::splitDecimal(num);
-		decimals = duc::abs(decimals);
-		int64_t intDecimals = int64_t(decimals * duc::pow(10, precision));
-		bool isNegative = num < 0;
-
-		char* numString = nullptr;
-
-		if(integer == 0 && isNegative){
-			numString = new char[32];
-			numString[0] = '-';
-			numString[1] = '0';
-			numString[2] = '\0';
-		}
-		else {
-			numString = duc::toChars(integer);
-		}
-
-
-		char* decString = duc::toChars(intDecimals);
-		uint16_t intSize = duc::digits(integer) + isNegative;
-
-		numString[intSize++] = '.';
-
-		for (int i = 0; i < precision; i++) {
-			numString[intSize + i] = decString[i];
-		}
-
-		delete[] decString;
-
-		numString[intSize + precision] = '\0';
-
-		return numString;
 	}
 
 }

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <concepts>
-#include <type_traits>
 
 #include "template_traits.h"
+
 // condition | convention | standard | satisfy 
 namespace duc::require { 
 
@@ -36,22 +36,22 @@ namespace duc::require {
 		};
 
 	template<typename value_type>
-	concept Complex = requires(value_type A, value_type B) {
+	concept Complex = requires(value_type A, double C) {
 		Real<value_type> || Arithmetic<value_type>;
 
-		{ A + B } -> std::convertible_to<value_type>;
-		{ A - B } -> std::convertible_to<value_type>;
-		{ A * B } -> std::convertible_to<value_type>;
-		{ A / B } -> std::convertible_to<value_type>;
+		{ A + C } -> std::convertible_to<value_type>;
+		{ A - C } -> std::convertible_to<value_type>;
+		{ A * C } -> std::convertible_to<value_type>;
+		{ A / C } -> std::convertible_to<value_type>;
 
-		A = double();
+		// A = double();
 	};
 
 	template<typename value_type>
 	concept StrictComplex = requires (value_type A) {
 		Complex<value_type>;
 		A.real();
-		A.img();
+		A.imag();
 	};
 
 	template<class vector_t>

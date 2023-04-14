@@ -9,8 +9,21 @@
 #elif defined(DUCLIB_MACRO_TOOLS) && _DUCLIB_DEBUG_LEVEL >= 0
 	constexpr auto DUCLIB_STT = 1;
 	constexpr auto DUCLIB_MSG = "Macro tools initialized successfully.";
+
+	#if !defined(DUCLIB_NUTILS) && !defined(DUCLIB_DISABLE_ALL)
+		#if !defined(NDEBUG) || defined(DUCLIB_RELEASE_UTILS)
+			#define DUC_DEBUG_INCLUDE(includeDirective) includeDirective
+			#define DUC_STRINGFY(x) #x
+			
+		#else
+			#define DUC_DEBUG_INCLUDE(includeDirective)
+			#define DUC_STRINGFY(x)
+			#define DUC_CONCAT(x, y)
+			#define DUC_CONCAT(x, ...)
+		#endif
+	#endif // DUCLIB_UTILS
 		
-	#if (!defined(DUCLIB_NLOG) && !defined(DUCLIB_DISABLE_ALL))
+	#if !defined(DUCLIB_NLOG) && !defined(DUCLIB_DISABLE_ALL)
 		#if !defined(NDEBUG) || defined(DUCLIB_RELEASE_LOG)
 
 #if _DUCLIB_DEBUG_LEVEL >= 0
@@ -28,10 +41,10 @@
 			#define DUC_ERROR_PAUSE(x, std_err, ...)
 
 
-			#define DUC_NOTHING(...)
+			#define DUC_NOTHING(...) __VA_ARGS__
 			#define DUC_MESSAGE(logType, message)	DUC_ ## logType ## _LOG(message, std::exception)
 			#define DUC_ERROR_MESSAGE(std_err, message)	DUC_ERROR_LOG(message, std_err)
-			#define DUC_TEST_RESULT(expression, expected, success, sreturn, error, ereturn)	[](auto leftExp, auto rightExp){ if((leftExp) == rightExp){ success; return sreturn; } else{error; return ereturn; } }(expression, expected)
+			#define DUC_TEST_RESULT(expression, expected, success, sreturn, error, ereturn)	[=](auto leftExp, auto rightExp){ if((leftExp) == rightExp){ success; return sreturn; } else{error; return ereturn; } }(expression, expected)
 
 
 			#define DUC_TEST(expression, errLevel, msg) DUC_TEST_RESULT(expression, true, DUC_NOTHING(), DUC_NOTHING(), DUC_MESSAGE(errLevel, msg), DUC_NOTHING())
@@ -64,27 +77,31 @@
 #endif // DEBUG LEVEL: WARN
 #endif // DEBUG LEVEL: INFO
 #endif // DEBUG LEVEL: NONE
-		#elif
+		#else
 
+			#undef _DUCLIB_DEBUG_LEVEL
 			#define _DUCLIB_DEBUG_LEVEL 0
 	
 			#define DUC_NONE_LOG(...)
-			#define DMP_INFO_LOG(...)
-			#define DMP_WARN_LOG(...)
-			#define DMP_ERROR_LOG(...)
+			#define DUC_INFO_LOG(...)
+			#define DUC_WARN_LOG(...)
+			#define DUC_ERROR_LOG(...)
 				
 			#define DUC_NONE_PAUSE(...)
-			#define DMP_INFO_PAUSE(...)
-			#define DMP_WARN_PAUSE(...)
-			#define DMP_ERROR_PAUSE(...)
+			#define DUC_INFO_PAUSE(...)
+			#define DUC_WARN_PAUSE(...)
+			#define DUC_ERROR_PAUSE(...)
 				
 			#define DUC_NOTHING(...)
-			#define DUC_MESSAGE(...)
-			#define DUC_TEST_RESULT(...)
+			#define DUC_MESSAGE(logType, message)
+			#define DUC_ERROR_MESSAGE(std_err, message)
+			#define DUC_TEST_RESULT(expression, expected, success, sreturn, error, ereturn)
 
 
-			#define DUC_TEST(...)
-			#define DUC_COMPARE(...)
+			#define DUC_TEST(expression, errLevel, msg)
+			#define DUC_TEST_ERROR(expression, std_err, msg)
+			#define DUC_COMPARE(x, y, comparison)
+
 	
 		#endif // NDEBUG
 	#endif // DUCLIB_LOG
