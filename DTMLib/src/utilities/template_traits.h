@@ -30,30 +30,30 @@ namespace duc {
 
 		template<size_t size_ask, size_t two_power, typename type>
 		struct size_cap {
-			static constexpr bool allowed = size_ask && (size_ask < ((1 << two_power) / sizeof(type)));
+			static constexpr bool value = size_ask && (size_ask < ((1 << two_power) / sizeof(type)));
 		};
 
 		template<size_t size, typename type>
-		using max8b = size_cap<size, 3, type>::allowed;
+		using max8b = size_cap<size, 3, type>;
 		template<size_t size, typename type>
-		using max16b = size_cap<size, 4, type>::allowed;
+		using max16b = size_cap<size, 4, type>;
 		template<size_t size, typename type>
-		using max32b = size_cap<size, 5, type>::allowed;
+		using max32b = size_cap<size, 5, type>;
 		template<size_t size, typename type>
-		using max64b = size_cap<size, 6, type>::allowed;
+		using max64b = size_cap<size, 6, type>;
 		template<size_t size, typename type>
-		using max128b = size_cap<size, 7, type>::allowed;
+		using max128b = size_cap<size, 7, type>;
 		template<size_t size, typename type>
-		using max256b = size_cap<size, 8, type>::allowed;
+		using max256b = size_cap<size, 8, type>;
 		template<size_t size, typename type>
-		using max512b = size_cap<size, 9, type>::allowed;
+		using max512b = size_cap<size, 9, type>;
 		template<size_t size, typename type>
-		using max1mb = size_cap<size, 10, type>::allowed;
+		using max1mb = size_cap<size, 10, type>;
 
 
 		template<template<size_t, typename> class conditional, size_t size, typename contained_type, class cont_1, class cont_2>
 		struct conditional_container {
-			using type = std::conditional_t<conditional<size, type>, cont_1, cont_2>;
+			using type = std::conditional_t<conditional<size, contained_type>::value, cont_1, cont_2>;
 		};
 
 
