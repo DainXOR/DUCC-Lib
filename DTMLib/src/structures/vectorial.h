@@ -648,6 +648,9 @@ namespace std {
 		return result;
 	}
 
+	std::ostream& operator<<(std::ostream &stream, const duc::satisfy::Vector auto& vec) {
+		return stream << std::to_string(vec);
+	}
 
 }
 

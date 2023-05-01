@@ -35,13 +35,7 @@ int main() {
 	//std::cout << v2[0] << v2[1] << v2[2] << "\n";
 	//std::cout << v1.at(0) << v1.at(1) << v1.at(2) << "\n";
 
-	std::cout << std::to_string(v0);
-
-	std::array<int, 3> Hm = {};
-	auto t = std::begin(Hm);
-	auto v = *t;
-
-	for (auto a : Hm) {}
+	std::cout << v0;
 
 	//duc::vector<3, duc::complex<>> v3{ { {2, 4}, {5,7}, {3, 731} } };
 	//v1 = v3;
