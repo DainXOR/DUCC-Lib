@@ -1,11 +1,14 @@
 #pragma once
 
-#include <concepts>
-
+#include <general_conventions.h>
 #include "template_traits.h"
 
-// condition | convention | standard | satisfy 
-namespace duc::require { 
+/// \Todo Rename file to conventions
+
+// > condition | convention | standard | satisfy 
+namespace duc::satisfy { 
+
+	/// > General Math Concepts
 
 	template<typename value_type>
 	concept Integer = std::_Is_nonbool_integral<value_type>; // std::is_integral_v<value_type> && !std::is_same_v<std::remove_cv_t<value_type>, bool>;
@@ -54,48 +57,45 @@ namespace duc::require {
 		A.imag();
 	};
 
+
+
+	/// > Vectorial Concepts
+
+	template<class tensor_t>
+	concept Tensor = requires (tensor_t T1, tensor_t T2, double S, int64_t I) {
+		T1.rank() > 0;
+		T1.shape();
+
+		{ T1 + T2 }; // -> std::convertible_to<value_type>;
+		{ T1 - T2 }; // -> std::convertible_to<value_type>;
+		{ T1 * T2 }; // -> std::convertible_to<value_type>;
+
+		{ T1 + S }; // -> std::convertible_to<value_type>;
+		{ T1 - S }; // -> std::convertible_to<value_type>;
+		{ T1 * S }; // -> std::convertible_to<value_type>;
+		{ T1 / S }; // -> std::convertible_to<value_type>;
+
+		{ -T1 };
+
+		T1[I];
+	};
+	template<class matrix_t>
+	concept Matrix = requires(matrix_t M1) {
+		Tensor<matrix_t>;
+
+		M1.rank() == 2;
+	};
 	template<class vector_t>
-	concept Vector = requires(vector_t V1, vector_t V2, double S) {
+	concept Vector = requires(vector_t V1, vector_t V2) {
+		Tensor<vector_t>;
 
-		{ V1 + V2 }; // -> std::convertible_to<value_type>;
-		{ V1 - V2 }; // -> std::convertible_to<value_type>;
-		{ V1 * V2 }; // -> std::convertible_to<value_type>;
+		V1.rank() == 1;
 
-		{ V1 + S }; // -> std::convertible_to<value_type>;
-		{ V1 - S }; // -> std::convertible_to<value_type>;
-		{ V1 * S }; // -> std::convertible_to<value_type>;
-		{ V1 / S }; // -> std::convertible_to<value_type>;
-
-		// V1 * V2;
-		// V1 * scalar;
-
-		V1.dimention();
 		V1.norm();
 		V1.normalize();
 		V1.crossProduct(V2);
 		V1.dotProduct(V2);
 
-		V1[uint64_t()];
-
-	};
-
-	template<class matrix_t>
-	concept Matrix = requires(matrix_t m) {
-		m.rank() == 2;
-
-	};
-
-	template<uint16_t...args>
-	concept Tensor = requires (int64_t n) {
-
-		std::convertible_to<decltype(math_utils::vectorial_properties<args...>::rank), uint16_t>;
-		std::convertible_to<decltype(math_utils::vectorial_properties<args...>::size), size_t>;
-
-		math_utils::vectorial_properties<args...>::rank != 0;
-		math_utils::vectorial_properties<args...>::size != 0;
-
-		math_utils::vectorial_properties<args...>::shape[n];
-		math_utils::vectorial_properties<args...>::shape.size();
 	};
 
 	template<typename space_t>
@@ -104,7 +104,15 @@ namespace duc::require {
 	};
 
 	template<typename value_type>
-	concept Vectorial = Vector<value_type> || Matrix<value_type> || Tensor<> || VectorialSpace<value_type>;
+	concept Vectorial = Vector<value_type> || Matrix<value_type> || Tensor<value_type> || VectorialSpace<value_type>;
+
+	template<typename value_type>
+	concept VectorialProperties = requires{
+		Integer<decltype(value_type::size)>;
+		Integer<decltype(value_type::rank)>;
+		Indexable<decltype(value_type::shape)>;
+	};
+
 }
 
 	

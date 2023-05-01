@@ -11,15 +11,18 @@
 	constexpr auto DUCLIB_MSG = "Macro tools initialized successfully.";
 
 	#if !defined(DUCLIB_NUTILS) && !defined(DUCLIB_DISABLE_ALL)
+
+		#define DUC_STRINGFY(x) #x
+
 		#if !defined(NDEBUG) || defined(DUCLIB_RELEASE_UTILS)
+			#define DUC_DEBUG_ASSERT(cond, expected, msg) static_assert((cond) == expected, msg)
+			#define DUC_SATISFIES(cond, msg) DUC_DEBUG_ASSERT(cond, true, msg)
 			#define DUC_DEBUG_INCLUDE(includeDirective) includeDirective
-			#define DUC_STRINGFY(x) #x
 			
 		#else
+			#define DUC_DEBUG_ASSERT(cond, msg)
+			#define DUC_SATISFIES(cond, msg)
 			#define DUC_DEBUG_INCLUDE(includeDirective)
-			#define DUC_STRINGFY(x)
-			#define DUC_CONCAT(x, y)
-			#define DUC_CONCAT(x, ...)
 		#endif
 	#endif // DUCLIB_UTILS
 		
@@ -29,49 +32,60 @@
 #if _DUCLIB_DEBUG_LEVEL >= 0
 			#include <iostream>
 
-			#define DUC_NONE_LOG(x, ...)					std::cout << x
-			#define DUC_NONE_PAUSE(x, ...)					std::cout << x << "\n"; std::cin.get()
+			#define DUC_NONE_LOG(x)				std::cout << x
+			#define DUC_NONE_PAUSE(x)			std::cout << x << "\n"; std::cin.get()
 
 			// Disable at this debug level
-			#define DUC_INFO_LOG(x, ...)
-			#define DUC_INFO_PAUSE(x, ...)
-			#define DUC_WARN_LOG(x, ...)
-			#define DUC_WARN_PAUSE(x, ...)
-			#define DUC_ERROR_LOG(x, std_err, ...)
-			#define DUC_ERROR_PAUSE(x, std_err, ...)
+			#define DUC_INFO_LOG(x)
+			#define DUC_INFO_PAUSE(x)
+			#define DUC_WARN_LOG(x)
+			#define DUC_WARN_PAUSE(x)
+			#define DUC_ERROR_LOG(x)
+			#define DUC_ERROR_PAUSE(x)
 
 
-			#define DUC_NOTHING(...) __VA_ARGS__
-			#define DUC_MESSAGE(logType, message)	DUC_ ## logType ## _LOG(message, std::exception)
-			#define DUC_ERROR_MESSAGE(std_err, message)	DUC_ERROR_LOG(message, std_err)
-			#define DUC_TEST_RESULT(expression, expected, success, sreturn, error, ereturn)	[=](auto leftExp, auto rightExp){ if((leftExp) == rightExp){ success; return sreturn; } else{error; return ereturn; } }(expression, expected)
+			#define DUC_NOTHING(...)				__VA_ARGS__
+			#define DUC_MESSAGE(logType, message)	DUC_ ## logType ## _LOG(message)
+			#define DUC_ERROR_MESSAGE(message)		DUC_MESSAGE(ERROR, message)
+			#define DUC_ERROR_THROW(message)		throw std::exception(message)
+			#define DUC_TEST_RESULT(expression, expected, success, sreturn, error, ereturn)	\
+				[](auto expretionVal, auto expectedVal, auto sret, auto eret){									\
+					if((expretionVal) == expectedVal){										\
+						success; 															\
+						return sret; 													\
+					} else{																	\
+						error; 																\
+						return eret; 													\
+					} 																		\
+				}(expression, expected, sreturn, ereturn)
 
 
-			#define DUC_TEST(expression, errLevel, msg) DUC_TEST_RESULT(expression, true, DUC_NOTHING(), DUC_NOTHING(), DUC_MESSAGE(errLevel, msg), DUC_NOTHING())
-			#define DUC_TEST_ERROR(expression, std_err, msg) DUC_TEST_RESULT(expression, true, DUC_NOTHING(), DUC_NOTHING(), DUC_ERROR_MESSAGE(std_err, msg), DUC_NOTHING())
-			#define DUC_COMPARE(x, y, comparison)		DUC_TEST_RESULT(x comparison y, true, DUC_NOTHING(), true, DUC_NOTHING(), false)
+			#define DUC_TEST(expression, errLevel, msg)		DUC_TEST_RESULT(expression, true, DUC_NOTHING(), true, DUC_MESSAGE(errLevel, msg), false)
+			#define DUC_TEST_ERROR(expression, msg)			DUC_TEST(expression, ERROR, msg)
+			#define DUC_TEST_THROW(expression, msg)			DUC_TEST_RESULT(expression, true, DUC_NOTHING(), true, DUC_ERROR_THROW(msg), false)
+			#define DUC_COMPARE(x, y, comparison)			DUC_TEST(x comparison y, NONE, "")
 
 
 #if _DUCLIB_DEBUG_LEVEL >= 1
 			#undef DUC_INFO_LOG
 			#undef DUC_INFO_PAUSE
 
-			#define DUC_INFO_LOG(x, ...)					std::cout << "[DEBUG INFO]: " << x << "\n"
-			#define DUC_INFO_PAUSE(x, ...)					std::cout << "[INFO PAUSE]:" << x << "\n"; std::cin.get()
+			#define DUC_INFO_LOG(x)				std::cout << "[DEBUG INFO]: " << x << "\n"
+			#define DUC_INFO_PAUSE(x)			std::cout << "[INFO PAUSE]:" << x << "\n"; std::cin.get()
 
 #if _DUCLIB_DEBUG_LEVEL >= 2
 			#undef DUC_WARN_LOG
 			#undef DUC_WARN_PAUSE
 
-			#define DUC_WARN_LOG(x, ...)					std::cout << "[DEBUG WARN]: " << x << "\n"
-			#define DUC_WARN_PAUSE(x, ...)					std::cout << "[WARN PAUSE]:" << x << "\n"; std::cin.get()
+			#define DUC_WARN_LOG(x)				std::cout << "[DEBUG WARN]: " << x << "\n"
+			#define DUC_WARN_PAUSE(x)			std::cout << "[WARN PAUSE]:" << x << "\n"; std::cin.get()
 
 #if _DUCLIB_DEBUG_LEVEL >= 3
 			#undef DUC_ERROR_LOG
 			#undef DUC_ERROR_PAUSE
 			
-			#define DUC_ERROR_LOG(x, std_err, ...)			std::cout << "[DEBUG ERROR]: " << x << "\n"; throw std_err(x)
-			#define DUC_ERROR_PAUSE(x)						std::cout << "[ERROR PAUSE]:" << x << "\n"; std::cin.get(); throw std_err(x)
+			#define DUC_ERROR_LOG(x)			std::cout << "[DEBUG ERROR]: " << x << "\n";
+			#define DUC_ERROR_PAUSE(x)			std::cout << "[ERROR PAUSE]:" << x << "\n"; std::cin.get();
 
 #endif // DEBUG LEVEL: ERROR
 #endif // DEBUG LEVEL: WARN
@@ -94,12 +108,14 @@
 				
 			#define DUC_NOTHING(...)
 			#define DUC_MESSAGE(logType, message)
-			#define DUC_ERROR_MESSAGE(std_err, message)
+			#define DUC_ERROR_MESSAGE(message)
+			#define DUC_ERROR_THROW(message)
 			#define DUC_TEST_RESULT(expression, expected, success, sreturn, error, ereturn)
 
 
 			#define DUC_TEST(expression, errLevel, msg)
-			#define DUC_TEST_ERROR(expression, std_err, msg)
+			#define DUC_TEST_ERROR(expression, msg)
+			#define DUC_TEST_THROW(expression, msg)
 			#define DUC_COMPARE(x, y, comparison)
 
 	
@@ -143,20 +159,25 @@
 	#if !defined(DUCLIB_NATT) && !defined(DUCLIB_DISABLE_ALL)
 		#if defined(NDEBUG) && !defined(DUCLIB_DISABLE_ATT)
 			#define DUC_RNOEXCEPT		noexcept
-			#define DUC_CONST_RNOEXCEPT	const DUC_RNOEXCEPT
 			#define DUC_RDEPRECATE(msg) [[deprecate(msg)]]
 			#define DUC_RNORETURN		[[noreturn]]
 
 		#else
 			#define DUC_RNOEXCEPT
-			#define DUC_CONST_RNOEXCEPT	const DUC_RNOEXCEPT
 			#define DUC_RDEPRECATE(msg)
 			#define DUC_RNORETURN
 		#endif
 
-		#if defined(DUCLIB_ENABLE_LIKELY_ATT)
+		#define DUC_CONST_RNOEXCEPT	const DUC_RNOEXCEPT
+
+		#if defined(DUCLIB_DISABLE_LIKELY_ATT)
+			#define DUC_LIKELY
+			#define DUC_UNLIKELY
+		#else
 			#define DUC_LIKELY [[likely]]
 			#define DUC_UNLIKELY [[unlikely]]
+
+
 		#endif // !NDEBUG
 	#endif // DUCLIB_ATT
 

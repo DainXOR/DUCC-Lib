@@ -3,7 +3,7 @@
 
 // #include <cmath>
 
-#include "../utilities/constrains.h"
+#include "../utilities/conventions.h"
 #include "../utilities/mutils.h"
 
 namespace duc {
@@ -24,10 +24,10 @@ namespace duc {
 	// constexpr auto pow(const auto& base, const auto& exponent);
 
 	/// \Todo	Write a better algorithm
-	constexpr auto abs(require::Decimal auto num) {
+	constexpr auto abs(satisfy::Decimal auto num) {
 		return num < 0 ? -num : num;
 	}
-	constexpr auto abs(require::Integer auto num) {
+	constexpr auto abs(satisfy::Integer auto num) {
 		constexpr uint16_t CHARBIT = 8;
 		const int64_t mask = num >> (sizeof(decltype(num)) * CHARBIT - 1);
 		return ((num + mask) ^ mask);
@@ -48,31 +48,31 @@ namespace duc {
 		return x ^ ((x ^ y) & -(x < y));
 	}
 
-	constexpr auto splitDecimal(require::Real auto num) {
-		return math_utils::pair_any{ int64_t(num), num - int64_t(num) };
+	constexpr auto splitDecimal(satisfy::Real auto num) {
+		return math_util::pair_any{ int64_t(num), num - int64_t(num) };
 	}
 	
-	constexpr int64_t ceil(require::Decimal auto number) {
+	constexpr int64_t ceil(satisfy::Decimal auto number) {
 		int8_t negativeFix = (number < 0) * -1;
 		int8_t negativeSign = 1 + (number < 0) * -2;
 		auto absNum = duc::abs(number);
 
 		return negativeSign * int64_t(absNum + negativeFix + 1);
 	}
-	constexpr int64_t floor(require::Decimal auto number) {
+	constexpr int64_t floor(satisfy::Decimal auto number) {
 		int8_t negativeFix = (number < 0) * -1;
 		return int64_t(number) + negativeFix;
 	}
-	constexpr int64_t round(require::Decimal auto number) {
+	constexpr int64_t round(satisfy::Decimal auto number) {
 		return (number > 0 && number - int64_t(number) >= 0.5f) ||
 			number < 0 && duc::abs(number) - duc::abs(int64_t(number)) <= 0.5f ?
 
 			duc::ceil(number) :
 			duc::floor(number);
 	}
-	constexpr double round(require::Decimal auto number, uint16_t precision) {
+	constexpr double round(satisfy::Decimal auto number, uint16_t precision) {
 		double decimals = duc::abs(number) - duc::abs(int64_t(number));
-		uint16_t mult = math_utils::powerPositiveInteger(10, precision);
+		uint16_t mult = math_util::powerPositiveInteger(10, precision);
 
 		decimals *= mult;
 		decimals = int64_t(decimals) / double(mult);
@@ -91,31 +91,31 @@ namespace duc {
 
 	///	\Todo	Implement efficient algorith for each power case.
 
-	constexpr double pow(require::Real auto base, const require::Integer auto& exponent) {
+	constexpr double pow(satisfy::Real auto base, const satisfy::Integer auto& exponent) {
 		if (exponent > 0) {
 			if (exponent == 1 || base == 1)
 				return base;
 
-			return math_utils::powerPositiveInteger(base, exponent);
+			return math_util::powerPositiveInteger(base, exponent);
 		}
 		
 		if (exponent == 0)
 			return 1;
 
-		return math_utils::powerPositiveInteger(1 / base, -exponent);
+		return math_util::powerPositiveInteger(1 / base, -exponent);
 		
 	}
-	constexpr double pow(require::Real auto base, const require::Decimal auto& exponent) {
+	constexpr double pow(satisfy::Real auto base, const satisfy::Decimal auto& exponent) {
 		return base * base;
 	}
 
 	//// Complex base, arithmetic exponent
-	//auto pow(require::StrictComplex auto base, const require::Real auto& exponent) {
+	//auto pow(satisfy::StrictComplex auto base, const satisfy::Real auto& exponent) {
 	//	return base * base * base;
 	//}
 
-	template<require::Real real_type>
-	constexpr double root(real_type base, const require::Integer auto& exponent, double epsilon = 1e-4){
+	template<satisfy::Real real_type>
+	constexpr double root(real_type base, const satisfy::Integer auto& exponent, double epsilon = 1e-4){
 		if (exponent == 1 || base == 1 || base == 0)
 			return base;
 

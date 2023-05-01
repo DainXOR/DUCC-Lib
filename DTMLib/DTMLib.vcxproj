@@ -122,9 +122,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_DUCLIB_DEBUG_LEVEL=3;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,9 +148,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_DUCLIB_DEBUG_LEVEL=3;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,10 +173,11 @@
     <ClInclude Include="src\experimental\math_experimental.h" />
     <ClInclude Include="src\functions\algorithm.h" />
     <ClInclude Include="src\functions\arithmetic.h" />
-    <ClInclude Include="src\structures\complex.h" />
+    <ClInclude Include="src\functions\trigonometric.h" />
+    <ClInclude Include="src\structures\mtcomplex.h" />
     <ClInclude Include="src\structures\polynomial.h" />
     <ClInclude Include="src\structures\vectorial.h" />
-    <ClInclude Include="src\utilities\constrains.h" />
+    <ClInclude Include="src\utilities\conventions.h" />
     <ClInclude Include="src\utilities\mutils.h" />
     <ClInclude Include="src\utilities\template_traits.h" />
   </ItemGroup>
@@ -181,6 +188,9 @@
     <ProjectReference Include="..\CUDLib\CUDLib.vcxproj">
       <Project>{0b8280e5-e97a-4464-9cee-4be5f690d0e1}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

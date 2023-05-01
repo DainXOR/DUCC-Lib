@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../utilities/constrains.h"
+#include "../utilities/conventions.h"
 
 #include <macro_tools.h>
 
 namespace duc {
-	template<require::Real type = double>
+	template<satisfy::Real type = double>
 	struct imaginary {
 		type value = 0;
 
@@ -13,7 +13,7 @@ namespace duc {
 
 	};
 
-	template<require::Real type = double>
+	template<satisfy::Real type = double>
 	class complex {
 	public:
 		using re_type = type;

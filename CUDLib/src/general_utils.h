@@ -4,7 +4,7 @@
 #include <string>
 #include <cmath>
 
-namespace duc {
+namespace duc::util {
 
 	template<typename ...str>
 	constexpr std::string concat(std::string arg1, str... args) {
@@ -67,6 +67,5 @@ namespace duc {
 		double multiplier = std::pow(10, precision);
 		return std::to_string(std::floor(num * multiplier) / multiplier);
 	}
-	
 }
 

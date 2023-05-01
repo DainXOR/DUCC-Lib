@@ -2,12 +2,12 @@
 
 #include "../functions/arithmetic.h"
 
-#include "../utilities/constrains.h"
+#include "../utilities/conventions.h"
 #include "../utilities/mutils.h"
 
 namespace duc {
 
-	template<require::Complex type1 = double, require::Complex type2 = double>
+	template<satisfy::Complex type1 = double, satisfy::Complex type2 = double>
 	class fraction {
 	public:
 		using num_type = type1;
@@ -44,14 +44,14 @@ namespace duc {
 		fraction operator+(const fraction<rhs_num, rhs_den>& rhs) const noexcept {
 			return { this->numerator + rhs.numerator, this->denominator + rhs.denominator };
 		}
-		fraction operator+(const require::Real auto& rhs) const noexcept {
+		fraction operator+(const satisfy::Real auto& rhs) const noexcept {
 			return this + fraction<num_type, den_type>::toFraction(rhs);
 		}
 		
 	};
 
-	template<require::Real num_type = double, require::Real den_type = double>
-	fraction<num_type, den_type> toFraction(const require::Real auto& number, double epsilon = 1e-5) DUC_RNOEXCEPT {
+	template<satisfy::Real num_type = double, satisfy::Real den_type = double>
+	fraction<num_type, den_type> toFraction(const satisfy::Real auto& number, double epsilon = 1e-5) DUC_RNOEXCEPT {
 
 		auto [intPart, fracPart] = duc::splitDecimal(number);
 
@@ -86,7 +86,7 @@ namespace duc {
 		}
 	}
 
-	template<require::StrictComplex complex_type>
+	template<satisfy::StrictComplex complex_type>
 	fraction<complex_type> toFraction(const complex_type& number) DUC_RNOEXCEPT {
 		fraction realFrac = duc::toFraction(number.real());
 		fraction imgFrac = duc::toFraction(number.img());
@@ -105,11 +105,11 @@ namespace duc {
 		return { resultNum , resultDen };
 	}
 
-	template<require::Complex type = double>
+	template<satisfy::Complex type = double>
 	class polynomial {
 	public:
 		using ec_type = char*;
-		using va_type = math_utils::pair_any<char, type>[];
+		using va_type = math_util::pair_any<char, type>[];
 
 
 	public:

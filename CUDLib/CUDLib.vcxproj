@@ -114,7 +114,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_DUCLIB_DEBUG_LEVEL=3;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_DUCLIB_DEBUG_LEVEL=3;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="src\benchmark.h" />
     <ClInclude Include="src\cudlib.h" />
+    <ClInclude Include="src\general_conventions.h" />
     <ClInclude Include="src\general_utils.h" />
     <ClInclude Include="src\macro_tools.h" />
     <ClInclude Include="src\experimental.h" />

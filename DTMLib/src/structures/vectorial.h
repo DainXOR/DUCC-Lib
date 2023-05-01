@@ -1,173 +1,175 @@
 #pragma once
 
 #include <array>
-#include <vector>
+//#include <vector>
 
-#include "../utilities/constrains.h"
+#include "../utilities/conventions.h"
 #include "../functions/arithmetic.h"
 
 #include <general_utils.h>
+#include <general_conventions.h>
 #include <macro_tools.h>
 
 namespace duc{
+	using namespace satisfy;
+	/// > Declarations
 
-	template<require::Integer auto r = 0, require::Complex type = float,
-		class container = conditional::array_or_vector_256bmax<r, type>>
+	template<satisfy::Integer auto r = 2, satisfy::Complex type = float,
+		template<typename, size_t> class container = std::array>
+		requires satisfy::Container<container<type, r>>
 	class vector;
 
-	template<require::Complex type = float, require::Integer auto m = 3, require::Integer auto n = 3>
+	template<satisfy::Integer auto m = 3, satisfy::Integer auto n = 3, satisfy::Complex type = float,
+		template<typename, size_t> class container = std::array>
 	class matrix;
 
-	template<require::Complex type = float, require::Integer auto... dims>
+	template<satisfy::VectorialProperties properties = trait::vectorial<3, 3, 3>, satisfy::Complex type = float,
+		template<typename, size_t> class container = std::array>
 	class tensor;
 
 
+	/// > Definitions
 
-	template<require::Integer auto r, require::Complex type, class container>
+	template<satisfy::Integer auto r, satisfy::Complex type, template<typename, size_t> class container>
+		requires satisfy::Container<container<type, r>>
 	class vector {
 	public:
-		using dim_t = decltype(r);
-		using properties = math_utils::vectorial_properties<r>;
+		DUC_SATISFIES(r > 0, "Vector size must be greater than cero.");
 
-		using buffer_type = container;
+		using traits = trait::vectorial<r>;
+		using value_type = type;
+		using buffer_type = container<type, r>;
+
+		using iterator = buffer_type::iterator;
+		using const_iterator = buffer_type::const_iterator;
+
+		using reverse_iterator = buffer_type::reverse_iterator;
+		using const_reverse_iterator = buffer_type::const_reverse_iterator;
 
 		buffer_type _elements = { 0 };
 
 	public:
-		constexpr size_t rank()			DUC_CONST_RNOEXCEPT { return 1; }
-		constexpr size_t size()			DUC_CONST_RNOEXCEPT { if constexpr(r) return r; else return _elements.size(); }
-		constexpr size_t dimention()	DUC_CONST_RNOEXCEPT { return this->size(); }
+		constexpr int64_t rank()			DUC_CONST_RNOEXCEPT { return 1; }
+		constexpr int64_t size()			DUC_CONST_RNOEXCEPT { return r; }
+		constexpr int64_t max_size()		DUC_CONST_RNOEXCEPT { return r; }
+		constexpr int64_t shape()			DUC_CONST_RNOEXCEPT { return r; }
+		constexpr int64_t dimention(size_t)	DUC_CONST_RNOEXCEPT { return r; }
+		constexpr bool	  empty()			DUC_CONST_RNOEXCEPT { return false; }
 
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type>& operator=(const vector<r, other_type, other_container>& other) DUC_RNOEXCEPT {
+		//constexpr vector& operator=(const satisfy::Vector auto& other) DUC_RNOEXCEPT {
+		//	//DUC_TEST_ERROR((std::convertible_to<other_type, type>), std::invalid_argument, duc::util::concat(
+		//	//	"Type ", typeid(other_type).name(), " cannot be converted into ", typeid(type).name(), "."));
+		//
+		//	(&other != this) && std::copy(other.begin(), other.end(), this->begin());
+		//	return *this;
+		//}
 
-			//DUC_TEST_ERROR((std::convertible_to<other_type, type>), std::invalid_argument, duc::concat(
-			//	"Type ", typeid(other_type).name(), " cannot be converted into ", typeid(type).name(), "."));
+		constexpr vector operator+(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_THROW(this->size() == other.size(), "The vectors must have the same size.");
+
+			vector result = (*this);
+			vector other_vector = other;
 
 			for (int i = 0; i < this->size(); i++) {
-				_elements[i] = type(other[i]);
+				result[i] += other_vector[i];
 			}
+			return result;
+		}
+		constexpr vector operator-(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
+
+
+			vector result = (*this);
+			vector other_vector = other;
+
+			for (int i = 0; i < this->size(); i++) {
+				result[i] -= other_vector[i];
+			}
+			return result;
+		}
+		constexpr vector operator*(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
+
+			vector result = (*this);
+			vector other_vector = other;
+
+			for (int i = 0; i < this->size(); i++) {
+				result[i] *= other_vector[i];
+			}
+			return result;
+		}
+		constexpr vector operator/(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
+
+			vector result = (*this);
+			vector other_vector = other;
+
+			for (int i = 0; i < this->size(); i++) {
+				result[i] /= other_vector[i];
+			}
+			return result;
+		}
+
+		constexpr vector operator+(type scalar) DUC_CONST_RNOEXCEPT {
+			vector result = (*this);
+
+			for (int i = 0; i < size(); i++) {
+				result[i] += scalar;
+			}
+			return result;
+		}
+		constexpr vector operator-(type scalar) DUC_CONST_RNOEXCEPT {
+			vector result = (*this);
+
+			for (int i = 0; i < size(); i++) {
+				result[i] -= scalar;
+			}
+			return result;
+		}
+		constexpr vector operator*(type scalar) DUC_CONST_RNOEXCEPT {
+			vector result = (*this);
+
+			for (int i = 0; i < size(); i++) {
+				result[i] *= scalar;
+			}
+			return result;
+		}
+		constexpr vector operator/(type scalar) DUC_CONST_RNOEXCEPT {
+			vector result = (*this);
+
+			for (int i = 0; i < size(); i++) {
+				result[i] /= scalar;
+			}
+			return result;
+		}
+
+		constexpr vector& operator+=(const auto& other) DUC_RNOEXCEPT {
+			(*this) = (*this) + other;
 			return *this;
 		}
-
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type> operator+(const vector<r, other_type, other_container>& other) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR(size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
-
-			vector<r, type, buffer_type> result;
-			for (int i = 0; i < this->size(); i++) {
-				result[i] = _elements[i] + type(other[i]);
-			}
-			return result;
-		}
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type> operator-(const vector<r, other_type, other_container>& other) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR(size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
-
-			vector<r, type, buffer_type> result;
-			for (int i = 0; i < this->size(); i++) {
-				result[i] = _elements[i] - type(other[i]);
-			}
-			return result;
-		}
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type> operator*(const vector<r, other_type, other_container>& other) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR(size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
-
-			vector<r, type, buffer_type> result;
-			for (int i = 0; i < this->size(); i++) {
-				result[i] = _elements[i] * type(other[i]);
-			}
-			return result;
-		}
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type> operator/(const vector<r, other_type, other_container>& other) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR(size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
-
-			vector<r, type, buffer_type> result;
-			for (int i = 0; i < this->size(); i++) {
-				result[i] = _elements[i] / type(other[i]);
-			}
-			return result;
-		}
-
-		constexpr vector<r, type, buffer_type> operator+(require::Real auto scalar) DUC_CONST_RNOEXCEPT {
-			vector<r, type, buffer_type> result;
-			for (int i = 0; i < size(); i++) {
-				result[i] = _elements[i] + scalar;
-			}
-			return result;
-		}
-		constexpr vector<r, type, buffer_type> operator-(require::Real auto scalar) DUC_CONST_RNOEXCEPT {
-			vector<r, type, buffer_type> result;
-			for (int i = 0; i < size(); i++) {
-				result[i] = _elements[i] - scalar;
-			}
-			return result;
-		}
-		constexpr vector<r, type, buffer_type> operator*(require::Real auto scalar) DUC_CONST_RNOEXCEPT {
-			vector<r, type, buffer_type> result;
-			type mult = type(scalar);
-
-			for (int i = 0; i < size(); i++) {
-				result[i] = _elements[i] * mult;
-			}
-			return result;
-		}
-		constexpr vector<r, type, buffer_type> operator/(require::Real auto scalar) DUC_CONST_RNOEXCEPT {
-			vector<r, type, buffer_type> result;
-			type mult = type(scalar);
-
-			for (int i = 0; i < size(); i++) {
-				result[i] = _elements[i] / mult;
-			}
-			return result;
-		}
-
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type>& operator+=(const vector<r, other_type, other_container>& other) DUC_RNOEXCEPT {
-			*this = (*this) + other;
-			return *this;
-		}
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type>& operator-=(const vector<r, other_type, other_container>& other) DUC_RNOEXCEPT {
+		constexpr vector& operator-=(const auto& other) DUC_RNOEXCEPT {
 			*this = (*this) - other;
 			return *this;
 		}
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type>& operator*=(const vector<r, other_type, other_container>& other) DUC_RNOEXCEPT {
+		constexpr vector& operator*=(const auto& other) DUC_RNOEXCEPT {
 			*this = (*this) * other;
 			return *this;
 		}
-		template<std::convertible_to<type> other_type, class other_container>
-		constexpr vector<r, type, buffer_type>& operator/=(const vector<r, other_type, other_container>& other) DUC_RNOEXCEPT {
+		constexpr vector& operator/=(const auto& other) DUC_RNOEXCEPT {
 			*this = (*this) / other;
 			return *this;
 		}
 
-		constexpr vector<r, type, buffer_type>& operator+=(require::Real auto scalar) DUC_RNOEXCEPT {
-			*this = (*this) + scalar;
-			return *this;
-		}
-		constexpr vector<r, type, buffer_type>& operator-=(require::Real auto scalar) DUC_RNOEXCEPT {
-			*this = (*this) - scalar;
-			return *this;
-		}
-		constexpr vector<r, type, buffer_type>& operator*=(require::Real auto scalar) DUC_RNOEXCEPT {
-			*this = (*this) * scalar;
-			return *this;
-		}
-		constexpr vector<r, type, buffer_type>& operator/=(require::Real auto scalar) DUC_RNOEXCEPT {
-			*this = (*this) / scalar;
-			return *this;
+		constexpr vector<r, type, container> operator-() DUC_RNOEXCEPT {
+			return (*this) * -1;
 		}
 
-		constexpr vector<r, type, buffer_type> operator-() DUC_RNOEXCEPT {
-			return (*this) - ((*this) * 2);
+		template<std::convertible_to<type> other_type, template<typename, size_t> class other_container>
+		constexpr std::strong_ordering operator<=>(const vector<r, other_type, other_container>& other) {
+			return this->fastMagnitude() <=> other.fastMagnitude();
 		}
 
-
-		constexpr double fastMagnitude() const noexcept {
+		constexpr double fastMagnitude() DUC_CONST_RNOEXCEPT {
 			type acumulator{};
 
 			for (size_t i = 0; i < r; i++) {
@@ -176,7 +178,7 @@ namespace duc{
 			// // ((acumulator += _elements[r-1] * _elements[r - 1]), ...);  // fold expression
 			return static_cast<double>(acumulator);
 		}
-		constexpr double norm() const noexcept {
+		constexpr double norm() DUC_CONST_RNOEXCEPT {
 			return duc::root(this->fastMagnitude(), 2);
 		}
 
@@ -187,8 +189,13 @@ namespace duc{
 			return (*this) *= duc::fastInvSqrt(float(fastMagnitude()));
 		}
 
-		constexpr type dotProduct(const require::Vector auto& other) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR(this->size() == other.size(), std::invalid_argument, "The vectors must have the same size.");
+		template<typename vector_t>
+		constexpr double angle(const vector_t& other) DUC_CONST_RNOEXCEPT {
+			return this->dotProduct(other) / (this->norm() * other.norm());
+		}
+
+		constexpr type dotProduct(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
 
 			type result = 0;
 			for (int i = 0; i < this->size(); i++) {
@@ -198,184 +205,386 @@ namespace duc{
 			return result;
 		}
 
-		constexpr vector& hadamardProduct(const require::Vector auto& other);
-		constexpr vector& crossProduct(const require::Vector auto& other);
+		constexpr vector& hadamardProduct(const satisfy::Vector auto& other) DUC_RNOEXCEPT {
+			return (*this);
+		}
+		template<typename vector_t>
+		constexpr vector& crossProduct(const vector_t& other) DUC_RNOEXCEPT {
+			return (*this);
+		}
 
-		constexpr matrix<type, r, r> outerProduct(const require::Vector auto& other) const ;
+		constexpr matrix<r, r, type> outerProduct(const satisfy::Vector auto& other) DUC_CONST_RNOEXCEPT {
+			return (*this);
+		}
 
 		
+		// > Indexing
 
-		constexpr type &operator[](const require::Integer auto& index) DUC_RNOEXCEPT {
-			DUC_TEST_ERROR(index < size(), std::out_of_range, "Index out of bounds.");
-
-			return _elements[index];
-		}
-		constexpr const type& operator[](const require::Integer auto& index) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR(index < size(), std::out_of_range, "Index out of bounds.");
+		constexpr type &operator[](const satisfy::Integer auto& index) DUC_RNOEXCEPT {
+			DUC_TEST_THROW(index < size() && index >= 0, "Index out of bounds.");
 
 			return _elements[index];
 		}
+		constexpr const type& operator[](const satisfy::Integer auto& index) DUC_CONST_RNOEXCEPT {
+			return _elements[index];
+		}
 
-		constexpr type& at(const require::Integer auto& index) {
-			if (index >= size())
+		constexpr type& at(satisfy::Integer auto index) {
+			if (index >= signed(size()) || duc::abs(index) > size())
 				throw std::out_of_range("Index out of bounds.");
 
-			if (index < 0 && duc::abs(index) < size() - 1)
-				return _elements.at(this->size() - index);
+			
+			if (index < 0)
+				return _elements[size() + index];
 
-			return _elements.at(index);
+			return _elements[index];
 		}
-		auto front() {
-			return this->_elements.front();
+		constexpr const type& at(satisfy::Integer auto index) const {
+			return this->at(index);
 		}
-		auto back() {
-			return this->_elements.back();
-		}
-
-		auto begin() {
-			return this->_elements.begin();
-		}
-		auto end() {
-			return this->_elements.end();
-		}
-
-		auto rbegin() {
-			return this->_elements.rbegin();
-		}
-		auto rend() {
-			return this->_elements.rend();
-		}
-
-		auto cbegin() {
-			return this->_elements.cbegin();
-		}
-		auto cend() {
-			return this->_elements.cend();
-		}
-
-		auto crbegin() {
-			return this->_elements.crbegin();
-		}
-		auto crend() {
-			return this->_elements.crend();
-		}
-
-
-		// >Shady practices incomming
-
 		
+		constexpr auto& front() DUC_RNOEXCEPT {
+			return this->at(0);
+		}
+		constexpr auto& back() DUC_RNOEXCEPT {
+			return this->at(-1);
+		}
+
+		// > Iterators
+
+		constexpr iterator begin() DUC_RNOEXCEPT requires(satisfy::Iterable<buffer_type>) {
+			return std::begin(_elements);
+		}
+		constexpr iterator end() DUC_RNOEXCEPT requires(satisfy::Iterable<buffer_type>) {
+			return std::end(_elements);
+		}
+
+		constexpr reverse_iterator rbegin() DUC_RNOEXCEPT requires(satisfy::Iterable<buffer_type>) {
+			return std::rbegin(_elements);
+		}
+		constexpr reverse_iterator rend() DUC_RNOEXCEPT requires(satisfy::Iterable<buffer_type>) {
+			return std::rend(_elements);
+		}
+
+		constexpr const_iterator cbegin() DUC_CONST_RNOEXCEPT requires(satisfy::Iterable<buffer_type>) {
+			return std::cbegin(_elements);
+		}
+		constexpr const_iterator cend() DUC_CONST_RNOEXCEPT requires(satisfy::Iterable<buffer_type>) {
+			return std::cend(_elements);
+		}
+
+		constexpr const_reverse_iterator crbegin() DUC_CONST_RNOEXCEPT requires(satisfy::Iterable<buffer_type>) {
+			return std::crbegin(_elements);
+		}
+		constexpr const_reverse_iterator crend() DUC_CONST_RNOEXCEPT requires(satisfy::Iterable<buffer_type>) {
+			return std::crend(_elements);
+		}
 		
+		constexpr void swap(satisfy::Vector auto& other) {
+			std::swap(this->_elements, other._elements);
+		}
+
+		// > Convertion operators
+		operator bool() DUC_CONST_RNOEXCEPT { return bool(fastMagnitude()); }
 	};
 
-	template<require::Complex type, require::Integer auto m, require::Integer auto n>
+	//template<satisfy::Integer auto r, typename type, template<typename, size_t> class container>
+	//class vector<r, type, container> {
+	//	
+	//};
+
+	template<satisfy::Integer auto m, satisfy::Integer auto n, satisfy::Complex type, template<typename, size_t> class container>
 	class matrix {
+	public:
+		DUC_SATISFIES(m * n > 0, "Matrix size must be greater than cero.");
+
+		using traits = trait::vectorial<m, n>;
+		using value_type = type;
+		using buffer_type = container<type, m * n>;
+
+		buffer_type _elements = { 0 };
+
+	public:
+		constexpr int64_t	rank()					DUC_CONST_RNOEXCEPT { return 1; }
+		constexpr int64_t	size()					DUC_CONST_RNOEXCEPT { return traits::size; }
+		constexpr int64_t	max_size()				DUC_CONST_RNOEXCEPT { return traits::size; }
+		constexpr auto		shape()					DUC_CONST_RNOEXCEPT { return traits::shape; }
+		constexpr int64_t	dimention(size_t dim)	DUC_CONST_RNOEXCEPT { return shape()[dim]; }
+		constexpr bool		empty()					DUC_CONST_RNOEXCEPT { return false; }
+
+
+		constexpr matrix operator+(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_THROW(this->size() == other.size(), "The vectors must have the same size.");
+
+			matrix result = (*this);
+			matrix other_matrix = other;
+
+			for (int i = 0; i < this->size(); i++) {
+				result[i] += other_matrix[i];
+			}
+			return result;
+		}
+		constexpr matrix operator-(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
+
+
+			matrix result = (*this);
+			matrix other_matrix = other;
+
+			for (int i = 0; i < this->size(); i++) {
+				result[i] -= other_matrix[i];
+			}
+			return result;
+		}
+		constexpr matrix operator*(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
+
+			matrix result = (*this);
+			matrix other_matrix = other;
+
+			for (int i = 0; i < this->size(); i++) {
+				result[i] *= other_matrix[i];
+			}
+			return result;
+		}
+		constexpr matrix operator/(const auto& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
+
+			matrix result = (*this);
+			matrix other_matrix = other;
+
+			for (int i = 0; i < this->size(); i++) {
+				result[i] /= other_matrix[i];
+			}
+			return result;
+		}
+
+		constexpr matrix operator+(type scalar) DUC_CONST_RNOEXCEPT {
+			matrix result = (*this);
+
+			for (int i = 0; i < size(); i++) {
+				result[i] += scalar;
+			}
+			return result;
+		}
+		constexpr matrix operator-(type scalar) DUC_CONST_RNOEXCEPT {
+			matrix result = (*this);
+
+			for (int i = 0; i < size(); i++) {
+				result[i] -= scalar;
+			}
+			return result;
+		}
+		constexpr matrix operator*(type scalar) DUC_CONST_RNOEXCEPT {
+			matrix result = (*this);
+
+			for (int i = 0; i < size(); i++) {
+				result[i] *= scalar;
+			}
+			return result;
+		}
+		constexpr matrix operator/(type scalar) DUC_CONST_RNOEXCEPT {
+			matrix result = (*this);
+
+			for (int i = 0; i < size(); i++) {
+				result[i] /= scalar;
+			}
+			return result;
+		}
+
+		constexpr matrix& operator+=(const auto& other) DUC_RNOEXCEPT {
+			(*this) = (*this) + other;
+			return *this;
+		}
+		constexpr matrix& operator-=(const auto& other) DUC_RNOEXCEPT {
+			*this = (*this) - other;
+			return *this;
+		}
+		constexpr matrix& operator*=(const auto& other) DUC_RNOEXCEPT {
+			*this = (*this) * other;
+			return *this;
+		}
+		constexpr matrix& operator/=(const auto& other) DUC_RNOEXCEPT {
+			*this = (*this) / other;
+			return *this;
+		}
+
+		constexpr matrix& operator-() DUC_RNOEXCEPT {
+			return (*this) * -1;
+		}
+
+		template<std::convertible_to<type> other_type, template<typename, size_t> class other_container>
+		constexpr std::strong_ordering operator<=>(const matrix<m, n, other_type, other_container>& other) {
+			return this->size() <=> other.size();
+		}
+
+
+
+		// > Indexing
+
+		constexpr type &operator[](const satisfy::Integer auto& index) DUC_RNOEXCEPT {
+			DUC_TEST_THROW(index < size() && index >= 0, "Index out of bounds.");
+
+			return _elements[index];
+		}
+		constexpr const type& operator[](const satisfy::Integer auto& index) DUC_CONST_RNOEXCEPT {
+			return _elements[index];
+		}
+
+		constexpr type& at(satisfy::Integer auto index) {
+			if (index >= signed(size()) || duc::abs(index) > size())
+				throw std::out_of_range("Index out of bounds.");
+
+
+			if (index < 0)
+				return _elements[size() + index];
+
+			return _elements[index];
+		}
+		constexpr const type& at(satisfy::Integer auto index) const {
+			if (index >= signed(size()) || duc::abs(index) > size())
+				throw std::out_of_range("Index out of bounds.");
+
+
+			if (index < 0)
+				return _elements[size() + index];
+
+			return _elements[index];
+		}
+
+		constexpr auto& front() {
+			return this->at(0);
+		}
+		constexpr auto& back() {
+			return this->at(-1);
+		}
+
+		// > Iterators
+
+		template<typename = std::enable_if_t<satisfy::Iterable<buffer_type>>>
+		constexpr auto begin() {
+			return std::begin(_elements);
+		}
+		template<typename = std::enable_if_t<satisfy::Iterable<buffer_type>>>
+		constexpr auto end() {
+			return std::end(_elements);
+		}
+
+		template<typename = std::enable_if_t<satisfy::Iterable<buffer_type>>>
+		constexpr auto rbegin() {
+			return std::rbegin(_elements);
+		}
+		template<typename = std::enable_if_t<satisfy::Iterable<buffer_type>>>
+		constexpr auto rend() {
+			return std::rend(_elements);
+		}
+
+		template<typename = std::enable_if_t<satisfy::Iterable<buffer_type>>>
+		constexpr auto cbegin() {
+			return std::cbegin(_elements);
+		}
+		template<typename = std::enable_if_t<satisfy::Iterable<buffer_type>>>
+		constexpr auto cend() {
+			return std::cend(_elements);
+		}
+
+		template<typename = std::enable_if_t<satisfy::Iterable<buffer_type>>>
+		constexpr auto crbegin() {
+			return std::crbegin(_elements);
+		}
+		template<typename = std::enable_if_t<satisfy::Iterable<buffer_type>>>
+		constexpr auto crend() {
+			return std::crend(_elements);
+		}
+
+		template<std::convertible_to<type> other_type, template<typename, size_t> class other_container>
+		constexpr void swap(matrix<m, n, other_type, other_container>& other) {
+			std::swap(this->_elements, other._elements);
+		}
+
+
+
 	};
 
-	template<require::Complex type, require::Integer auto... dims>
+	template<satisfy::VectorialProperties properties, satisfy::Complex type, template<typename, size_t> class container>
 	class tensor {
 
-		using dim_t = std::common_type_t<decltype(dims)...>;
-		using properties = math_utils::vectorial_properties<dims...>;
+		DUC_SATISFIES(properties::size > 0, "Tensor size must be greater than cero.");
 
-		/*template<uint16_t _size>
-		using iterator = std::_Array_iterator<type, _size>;
-		template<uint16_t _size>
-		using const_iterator = std::_Array_const_iterator<type, _size>;
-
-		template<class iter>
-		using reverse_iterator = std::reverse_iterator<iter>;
-		template<class const_iter>
-		using const_reverse_iterator = std::reverse_iterator<const_iter>;*/
-
-		// std::vector<type> mp_elements = std::vector<type>(tp::size);
-
-		using buffer_type = std::conditional_t< properties::rank && (properties::size < (((1ull << 32ull) - 1) / sizeof(type))),
-			std::array<type, properties::size>,
-			std::vector<type>>;
+		using dim_t = uint16_t;
+		using traits = properties;
+		using value_type = type;
+		using buffer_type = container<type,traits::size>;
 
 		buffer_type _elements = { 0 };
 
 	public:
 		// > Properties methods
 
-		constexpr size_t size()	DUC_CONST_RNOEXCEPT		{ return properties::size; }
-		constexpr uint16_t rank() DUC_CONST_RNOEXCEPT	{ return properties::rank; }
-		constexpr auto shape() DUC_CONST_RNOEXCEPT		{ return properties::shape; }
-		constexpr size_t dimention(const require::Integer auto& rankPos) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR((rankPos > properties::rank) || (rankPos < 0), std::out_of_range, "Rank outside tensor.\n");
+		constexpr size_t	size()	DUC_CONST_RNOEXCEPT		{ return traits::size; }
+		constexpr uint16_t	rank() DUC_CONST_RNOEXCEPT	{ return traits::rank; }
+		constexpr auto		shape() DUC_CONST_RNOEXCEPT		{ return traits::shape; }
+		constexpr size_t	dimention(satisfy::Integer auto rankPos) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_THROW((rankPos <= properties::rank) && (rankPos >= 0), "Rank outside tensor.\n");
 
 			return properties::shape[rankPos];
 		}
 
 		// > Access functions and operators
 
+		constexpr type& operator()(satisfy::Integer auto... indexes) DUC_RNOEXCEPT {
+
+			constexpr uint16_t IndexCount = sizeof...(indexes);
+			DUC_TEST_THROW(IndexCount > 0, "No indexes provided.");
+			DUC_TEST_THROW(IndexCount <= rank(), "Amount of indexes provided exceed the tensor rank.");
+
+			constexpr std::array<size_t, IndexCount> IndexesArray = { indexes... };
+
+			DUC_TEST_THROW([&]() {
+				for (size_t i = 0; i < IndexCount; ++i) {
+					if (IndexesArray[i] >= shape(i)) {
+						return false;
+					}
+				}
+				return true;
+			}(), "The indexes provided does not match the tensor shape.");
+
+			constexpr std::array Multipliers = math_util::calculateMultipliers(shape());
+			size_t index = 0;
+
+			for (uint16_t i = 0; i <= rank(); i++) {
+				DUC_TEST_THROW(IndexesArray[i] >= 0, "Negative indexes are not allowed.");
+				DUC_TEST_THROW(IndexesArray[i] < shape(i), "The index is outside the tensor.\n(Max =" + duc::util::toChars(shape(i) - 1) + ", Attempted[" + duc::util ::toChars(IndexesArray[i]) + "])");
+
+				index += IndexesArray[i] * Multipliers[i];
+			}
+
+			return _elements[index];
+
+		}
+		[[nodiscard]] constexpr const type& operator()(satisfy::Integer auto... indexes) DUC_RNOEXCEPT {
+			return (*this)(indexes...);
+		}
+
 		constexpr type& operator [](size_t index) DUC_RNOEXCEPT {
-			DUC_TEST_ERROR(index >= size(), std::out_of_range, "The index is outside the tensor. (Max = " + duc::toChars(size() - 1) + ")");
+			DUC_TEST_THROW(index < size(), "The index is outside the tensor. (Max = " + duc::util::toChars(size() - 1) + ")");
 
 			return _elements[index];
 		}
 		[[nodiscard]] constexpr const type& operator [](size_t index) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_ERROR(index < size(), std::out_of_range, "The index is outside the tensor. (Max = " + duc::toChars(size() - 1) + ")");
-
-			return _elements[index];
+			return (*this)[index];
 		}
 
-		constexpr type& operator()(require::Integer auto... indexes) DUC_RNOEXCEPT {
-
-			constexpr uint16_t IndexCount = sizeof...(indexes);
-			DUC_TEST_ERROR(IndexCount, std::invalid_argument, "No indexes provided.");
-			DUC_TEST_ERROR(IndexCount <= rank(), std::out_of_range, "Amount of indexes provided exceed the tensor rank.");
-
-			constexpr std::array<size_t, IndexCount> IndexesArray = { indexes... };
-			constexpr std::array Multipliers = math_utils::calculateMultipliers(shape());
-			size_t index = 0;
-
-			for (uint16_t i = 0; i <= rank(); i++) {
-				DUC_TEST_ERROR(IndexesArray[i] < 0, std::invalid_argument, "Negative indexes are not allowed.");
-				DUC_TEST_ERROR(IndexesArray[i] < dimention(i), std::out_of_range, "The index is outside the tensor.\n(Max =" + duc::toChars(dimention(i) - 1) + ", Attempted[" + duc::toChars(IndexesArray[i]) + "])");
-
-				index += IndexesArray[i] * Multipliers[i];
-			}
-
-			return _elements[index];
-
+		constexpr type& operator [](satisfy::Integer auto... indexes) DUC_RNOEXCEPT {
+			return (*this)(indexes...);
 		}
-
-		/*
-		constexpr std::optional<const reference> operator ()(constrains::UnsignedIntegral auto... indexes){
-
-			constexpr uint16_t IndexCount = sizeof...(indexes);
-			if (!IndexCount) {
-				return std::nullopt;
-			}
-
-			if (IndexCount > rank()) {
-				return std::nullopt;
-			}
-
-			std::array<size_t, IndexCount> IndexesArray = { indexes... };
-
-			for (size_t i = 0; i < IndexCount; ++i) {
-				if (IndexesArray[i] >= dimention(i)) {
-					return std::nullopt;
-				}
-			}
-
-			constexpr std::array Multipliers = multipliers(dimentions());
-
-			size_t index = 0;
-			for (size_t i = 0; i < IndexCount; ++i) {
-				index += IndexesArray[i] * Multipliers[i];
-			}
-
-			return mp_elements[index];
+		[[nodiscard]] constexpr const type& operator [](satisfy::Integer auto... indexes) DUC_CONST_RNOEXCEPT {
+			return (*this)(indexes...);
 		}
-		*/
 
 		// > Math operations functions and operators
 		tensor& operator+(const tensor& other) DUC_RNOEXCEPT {
-			DUC_TEST_ERROR(math_utils::isTensorsShapeCompatible(rank(), shape(), other.shape()),
-						   std::invalid_argument,
+			DUC_TEST_ERROR(math_util::isTensorsShapeCompatible(rank(), shape(), other.shape()),
 						   "The tensors must have a compatible shape.");
 
 			for (size_t i = 0; i < this->size(); i++) {
@@ -386,7 +595,7 @@ namespace duc{
 
 			return this;
 		}
-		tensor& operator+(require::Real auto scalar) {
+		tensor& operator+(satisfy::Real auto scalar) {
 			for (size_t i = 0; i < this->size(); i++) {
 				_elements[i] += scalar;
 			}
@@ -394,8 +603,7 @@ namespace duc{
 		}
 
 		tensor& operator-(const tensor& other) {
-			DUC_TEST_ERROR(math_utils::isTensorsShapeCompatible(rank(), shape(), other.shape()),
-						   std::invalid_argument,
+			DUC_TEST_ERROR(math_util::isTensorsShapeCompatible(rank(), shape(), other.shape()),
 						   "The tensors must have a compatible shape."
 			);
 
@@ -407,7 +615,7 @@ namespace duc{
 
 			return this;
 		}
-		tensor& operator-(require::Real auto scalar) {
+		tensor& operator-(satisfy::Real auto scalar) {
 			for (size_t i = 0; i < this->size(); i++) {
 				_elements[i] -= scalar;
 			}
@@ -416,12 +624,32 @@ namespace duc{
 
 	private:
 
-		template<require::UnsignedInteger... size_type = size_t>
-		std::enable_if<properties::rank != 0> changeDims(size_type... dims) {
-
-		}
-
 	};
 
 	
 }
+
+#ifdef _STRING_
+namespace std {
+
+	std::string to_string(const duc::satisfy::Vector auto& vec) {
+		std::string result = "<";
+		result.reserve((vec.size() * 2) + 1);
+
+		for (auto it = vec.cbegin(), end = vec.cend(); it != end; ++it) {
+			result.append(std::to_string(*it));
+			result.append(", ");
+		}
+
+		result.pop_back();
+		result.pop_back();
+		result.push_back('>');
+
+		return result;
+	}
+
+
+}
+
+
+#endif

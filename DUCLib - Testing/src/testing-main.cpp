@@ -2,7 +2,7 @@
 
 
 #include <structures/vectorial.h>
-#include <structures/complex.h>
+#include <structures/mtcomplex.h>
 #include <structures/polynomial.h>
 
 #include <functions/arithmetic.h>
@@ -14,36 +14,42 @@
 #include <cmath>
 
 #define DUCLIB_LOG
-#include <macro_tools.h>
-#include <benchmark.h>								
+#include <macro_tools.h>							
 
+void propertiesTests();
 
 int main() {
     /// // srand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+	DUC_SATISFIES(_HAS_CXX23, "Required c++23 to run the library.");
 
-	duc::complex<> c0 = { ._imaginary = 3 };
+	propertiesTests();
+	// duc::complex<> c0 = { ._imaginary = 3 };
 
-	duc::vector<3, float, float[3]> v0 = {{10, 20, 30}};
-	duc::vector<3> v1 = { { 2.3f, 5.32f, 4.7f } };
-	//duc::vector< 3, duc::complex<> > v3{ { {2, 4}, {5,7}, {3, 731} } };
+	duc::vector<3> v0 = { {10, 20, 30} };
+	const duc::vector<3> v1 = { { 2.3f, 5.32f, 4.7f } };
+
+	duc::matrix m0;
+
+	duc::vector v2 = v0 + v1;
+
+	//std::cout << v2[0] << v2[1] << v2[2] << "\n";
+	//std::cout << v1.at(0) << v1.at(1) << v1.at(2) << "\n";
+
+	std::cout << std::to_string(v0);
+
+	std::array<int, 3> Hm = {};
+	auto t = std::begin(Hm);
+	auto v = *t;
+
+	for (auto a : Hm) {}
+
+	//duc::vector<3, duc::complex<>> v3{ { {2, 4}, {5,7}, {3, 731} } };
 	//v1 = v3;
 
-	std::cout << noexcept(v0.size()) << "\n";
-	std::cout << noexcept(v1.size()) << "\n";
 
-	std::cout << std::is_aggregate_v<duc::vector<3, int>> << "\n";
-	std::cout << std::is_aggregate_v<duc::vector<0, int>> << "\n";
+	//T1.angle(T2);
+	//DUC_INFO_LOG(v0.angle(v1));
 
-	std::cout << duc::root(v0.fastMagnitude(), 2) << "\n";
-	std::cout << v0.norm() << "\n";
-	// v1 = v0;
-
-	auto v2 = v0;
-	v2.normalize();
-	v0.fastNormalize();
-	
-	std::cout << "<" << v2[0] << ", " << v2[1] << ", " << v2[2] << ">\n";
-	std::cout << "<" << v0[0] << ", " << v0[1] << ", " << v0[2] << ">\n";
 
 	/*
 	auto[num0, den0] = duc::toFraction(0.4);
@@ -68,3 +74,12 @@ int main() {
 	return 0;
 }
 
+
+void propertiesTests() {
+
+	std::cout << "Vector:\n";
+	std::cout << "- Satisfies Vector: " << duc::satisfy::Vector<duc::vector<>> << "\n";
+	std::cout << "- Aggregate default: " << std::is_aggregate_v<duc::vector<>> << "\n";
+	std::cout << "- Aggregate set r: " << std::is_aggregate_v<duc::vector<3, int>> << "\n";
+	
+}

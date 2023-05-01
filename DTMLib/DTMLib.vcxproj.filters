@@ -18,7 +18,7 @@
     <ClInclude Include="src\dtmlib.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\constrains.h">
+    <ClInclude Include="src\utilities\conventions.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="src\utilities\template_traits.h">
@@ -36,7 +36,7 @@
     <ClInclude Include="src\functions\arithmetic.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\structures\complex.h">
+    <ClInclude Include="src\structures\mtcomplex.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="src\structures\polynomial.h">
@@ -45,10 +45,16 @@
     <ClInclude Include="src\functions\algorithm.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="src\functions\trigonometric.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dtmlib.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>
