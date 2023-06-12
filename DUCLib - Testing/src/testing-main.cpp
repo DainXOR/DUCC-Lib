@@ -12,6 +12,7 @@
 // #include <string>
 // #include <tuple>
 #include <cmath>
+#include <valarray>
 
 #define DUCLIB_LOG
 #include <macro_tools.h>							
@@ -32,10 +33,11 @@ int main() {
 
 	duc::vector v2 = v0 + v1;
 
+
 	//std::cout << v2[0] << v2[1] << v2[2] << "\n";
 	//std::cout << v1.at(0) << v1.at(1) << v1.at(2) << "\n";
 
-	std::cout << v0;
+	std::cout << v0.dotProduct(std::array{ 1, 2, 3 });
 
 	//duc::vector<3, duc::complex<>> v3{ { {2, 4}, {5,7}, {3, 731} } };
 	//v1 = v3;

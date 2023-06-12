@@ -18,25 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\dmplib.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\dmplib.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CUDLib\CUDLib.vcxproj">
-      <Project>{0b8280e5-e97a-4464-9cee-4be5f690d0e1}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\DTMLib\DTMLib.vcxproj">
-      <Project>{e3d161df-5ea4-466d-863e-fe6cc2ec6b0b}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a433d2cd-3c48-4437-89e1-252d9a76ce05}</ProjectGuid>
-    <RootNamespace>DMPLib</RootNamespace>
+    <ProjectGuid>{03033cac-b542-4d44-8437-3978ee9de34d}</ProjectGuid>
+    <RootNamespace>DCLib</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -90,22 +76,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_DUCLIB_DEBUG_LEVEL=3;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalLibraryDirectories>
-    </Lib>
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -113,50 +93,41 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_DUCLIB_DEBUG_LEVEL=3</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalLibraryDirectories>
-    </Lib>
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>EnableAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_DUCLIB_DEBUG_LEVEL=3;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
-      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FloatingPointModel>Fast</FloatingPointModel>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalLibraryDirectories>
-    </Lib>
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -164,29 +135,41 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_DUCLIB_DEBUG_LEVEL=3</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalIncludeDirectories>
-      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <FloatingPointModel>Fast</FloatingPointModel>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <Optimization>Disabled</Optimization>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>
+      </SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;</AdditionalLibraryDirectories>
-    </Lib>
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\structures\dstring.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dclib.cpp" />
+    <ClCompile Include="src\structures\dstring.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

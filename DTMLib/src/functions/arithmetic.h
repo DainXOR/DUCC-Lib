@@ -80,7 +80,7 @@ namespace duc {
 		return int64_t(number) + decimals;
 	}
 	
-	constexpr double mod(const double& num, const double& div) {
+	constexpr double mod(double num, double div) {
 		int64_t mult = duc::floor(num / div);
 		return num - (div * mult);
 	}

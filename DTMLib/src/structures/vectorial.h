@@ -3,15 +3,14 @@
 #include <array>
 //#include <vector>
 
-#include "../utilities/conventions.h"
-#include "../functions/arithmetic.h"
+#include <utilities/conventions.h>
+#include <functions/arithmetic.h>
 
 #include <general_utils.h>
 #include <general_conventions.h>
 #include <macro_tools.h>
 
 namespace duc{
-	using namespace satisfy;
 	/// > Declarations
 
 	template<satisfy::Integer auto r = 2, satisfy::Complex type = float,
@@ -56,56 +55,58 @@ namespace duc{
 		constexpr int64_t dimention(size_t)	DUC_CONST_RNOEXCEPT { return r; }
 		constexpr bool	  empty()			DUC_CONST_RNOEXCEPT { return false; }
 
-		//constexpr vector& operator=(const satisfy::Vector auto& other) DUC_RNOEXCEPT {
-		//	//DUC_TEST_ERROR((std::convertible_to<other_type, type>), std::invalid_argument, duc::util::concat(
-		//	//	"Type ", typeid(other_type).name(), " cannot be converted into ", typeid(type).name(), "."));
-		//
-		//	(&other != this) && std::copy(other.begin(), other.end(), this->begin());
-		//	return *this;
-		//}
-
-		constexpr vector operator+(const auto& other) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_THROW(this->size() == other.size(), "The vectors must have the same size.");
+		template <typename vector_t>
+		constexpr vector operator+(const vector_t& other) DUC_CONST_RNOEXCEPT {
+			//DUC_TEST_THROW(this->size() == other.size(), "The vectors must have the same size.");
 
 			vector result = (*this);
-			vector other_vector = other;
 
 			for (int i = 0; i < this->size(); i++) {
-				result[i] += other_vector[i];
+				result[i] += other[i];
 			}
 			return result;
 		}
-		constexpr vector operator-(const auto& other) DUC_CONST_RNOEXCEPT {
+		template <typename vector_t>
+		constexpr vector operator-(const vector_t& other) DUC_CONST_RNOEXCEPT {
 			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
 
 
 			vector result = (*this);
-			vector other_vector = other;
 
 			for (int i = 0; i < this->size(); i++) {
-				result[i] -= other_vector[i];
+				result[i] -= other[i];
 			}
 			return result;
 		}
-		constexpr vector operator*(const auto& other) DUC_CONST_RNOEXCEPT {
+		template <typename vector_t>
+		constexpr vector operator*(const vector_t& other) DUC_CONST_RNOEXCEPT {
 			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
 
 			vector result = (*this);
-			vector other_vector = other;
 
 			for (int i = 0; i < this->size(); i++) {
-				result[i] *= other_vector[i];
+				result[i] *= other[i];
 			}
 			return result;
 		}
-		constexpr vector operator/(const auto& other) DUC_CONST_RNOEXCEPT {
+		template <typename vector_t>
+		constexpr vector operator/(const vector_t& other) DUC_CONST_RNOEXCEPT {
 			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
 
 			vector result = (*this);
-			vector other_vector = other;
 
 			for (int i = 0; i < this->size(); i++) {
-				result[i] /= other_vector[i];
+				result[i] /= other[i];
+			}
+			return result;
+		}
+		template <typename vector_t>
+		constexpr vector operator%(const vector_t& other) DUC_CONST_RNOEXCEPT {
+			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
+
+			vector result;
+			for (int i = 0; i < this->size(); i++) {
+				result[i] = duc::mod((*this)[i], other[i]);
 			}
 			return result;
 		}
@@ -142,6 +143,14 @@ namespace duc{
 			}
 			return result;
 		}
+		constexpr vector operator%(type scalar) DUC_CONST_RNOEXCEPT {
+			vector result;
+
+			for (int i = 0; i < size(); i++) {
+				result[i] /= duc::mod((*this)[i], scalar);
+			}
+			return result;
+		}
 
 		constexpr vector& operator+=(const auto& other) DUC_RNOEXCEPT {
 			(*this) = (*this) + other;
@@ -159,10 +168,22 @@ namespace duc{
 			*this = (*this) / other;
 			return *this;
 		}
+		constexpr vector& operator%=(const auto& other) DUC_RNOEXCEPT {
+			*this = (*this) % other;
+			return *this;
+		}
 
-		constexpr vector<r, type, container> operator-() DUC_RNOEXCEPT {
+		constexpr vector<r, type, container> operator-() DUC_CONST_RNOEXCEPT {
 			return (*this) * -1;
 		}
+		//constexpr vector<r, type, container> operator~() DUC_CONST_RNOEXCEPT {
+		//	vector result;
+		//	for (int i = 0; i < size(); i++) {
+		//		result[i] = ~((*this)[i]);
+		//	}
+		//	return result;
+		//}
+
 
 		template<std::convertible_to<type> other_type, template<typename, size_t> class other_container>
 		constexpr std::strong_ordering operator<=>(const vector<r, other_type, other_container>& other) {
@@ -194,7 +215,8 @@ namespace duc{
 			return this->dotProduct(other) / (this->norm() * other.norm());
 		}
 
-		constexpr type dotProduct(const auto& other) DUC_CONST_RNOEXCEPT {
+		template<typename vector_t>
+		constexpr type dotProduct(const vector_t& other) DUC_CONST_RNOEXCEPT{
 			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
 
 			type result = 0;
