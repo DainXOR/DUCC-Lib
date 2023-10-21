@@ -34,7 +34,7 @@ namespace duc {
 	}
 
 	constexpr uint16_t digits(int64_t num) {
-		int i = 0;
+		uint16_t i = 0;
 		do {
 			num /= 10;
 			i++;
@@ -82,7 +82,7 @@ namespace duc {
 	
 	constexpr double mod(double num, double div) {
 		int64_t mult = duc::floor(num / div);
-		return num - (div * mult);
+		return num - (div * double(mult));
 	}
 
 	constexpr auto greatestCommonDivisor(const auto& a, const auto& b) {

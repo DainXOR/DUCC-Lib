@@ -5,7 +5,7 @@
 #include <array>
 #include <vector>
 
-namespace duc::math_util::experimental {
+namespace duc::math_util::ex {
 	
 	namespace type {
 
@@ -15,7 +15,7 @@ namespace duc::math_util::experimental {
 		class basex;
 
 		template<uint64_t bitsPerSection = 8, 
-			class container = conditional::array_or_vector_256bmax<uint8_t, trait::fit_8bits<bitsPerSection>>>
+			class container = conditional::array_or_vector_256bmax<uint8_t, traits::fit_8bits<bitsPerSection>>>
 		class numberx;
 
 
@@ -41,7 +41,7 @@ namespace duc::math_util::experimental {
 	}
 
 	
-
+	
 	namespace function {
 
 		template<auto n, auto a, uint8_t step>

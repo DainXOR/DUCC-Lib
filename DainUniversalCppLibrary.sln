@@ -28,6 +28,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUCLib - Testing", "DUCLib - Testing\DSCLib - Testing.vcxproj", "{D7FCDA56-CFAF-4557-B2BC-7B534A9591E7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DUCLib", "DUCLib\DUCLib.vcxproj", "{49F0742B-15EA-42DD-999B-5B0692881946}"
+	ProjectSection(ProjectDependencies) = postProject
+		{03033CAC-B542-4D44-8437-3978EE9DE34D} = {03033CAC-B542-4D44-8437-3978EE9DE34D}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Containers", "Containers", "{8217BFF4-1D71-421E-B8B3-869F0447735F}"
 EndProject

@@ -22,7 +22,7 @@ namespace duc{
 		template<typename, size_t> class container = std::array>
 	class matrix;
 
-	template<satisfy::VectorialProperties properties = trait::vectorial<3, 3, 3>, satisfy::Complex type = float,
+	template<satisfy::VectorialProperties properties = traits::vectorial<3, 3, 3>, satisfy::Complex type = float,
 		template<typename, size_t> class container = std::array>
 	class tensor;
 
@@ -35,7 +35,7 @@ namespace duc{
 	public:
 		DUC_SATISFIES(r > 0, "Vector size must be greater than cero.");
 
-		using traits = trait::vectorial<r>;
+		using traits = traits::vectorial<r>;
 		using value_type = type;
 		using buffer_type = container<type, r>;
 
@@ -48,20 +48,20 @@ namespace duc{
 		buffer_type _elements = { 0 };
 
 	public:
-		constexpr int64_t rank()			DUC_CONST_RNOEXCEPT { return 1; }
-		constexpr int64_t size()			DUC_CONST_RNOEXCEPT { return r; }
-		constexpr int64_t max_size()		DUC_CONST_RNOEXCEPT { return r; }
-		constexpr int64_t shape()			DUC_CONST_RNOEXCEPT { return r; }
-		constexpr int64_t dimention(size_t)	DUC_CONST_RNOEXCEPT { return r; }
+		constexpr size_t rank()			DUC_CONST_RNOEXCEPT { return 1; }
+		constexpr size_t size()			DUC_CONST_RNOEXCEPT { return r; }
+		constexpr size_t max_size()		DUC_CONST_RNOEXCEPT { return r; }
+		constexpr size_t shape()			DUC_CONST_RNOEXCEPT { return r; }
+		constexpr size_t dimention(size_t)	DUC_CONST_RNOEXCEPT { return r; }
 		constexpr bool	  empty()			DUC_CONST_RNOEXCEPT { return false; }
 
 		template <typename vector_t>
 		constexpr vector operator+(const vector_t& other) DUC_CONST_RNOEXCEPT {
-			//DUC_TEST_THROW(this->size() == other.size(), "The vectors must have the same size.");
+			DUC_TEST_THROW(this->size() == other.size(), "The vectors must have the same size.");
 
 			vector result = (*this);
 
-			for (int i = 0; i < this->size(); i++) {
+			for (size_t i = 0; i < this->size(); i++) {
 				result[i] += other[i];
 			}
 			return result;
@@ -217,11 +217,11 @@ namespace duc{
 
 		template<typename vector_t>
 		constexpr type dotProduct(const vector_t& other) DUC_CONST_RNOEXCEPT{
-			DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
+			//DUC_TEST_ERROR(this->size() == other.size(), "The vectors must have the same size.");
 
 			type result = 0;
-			for (int i = 0; i < this->size(); i++) {
-				result += _elements[i] * other[i];
+			for (size_t i = 0; i < this->size(); i++) {
+				result += this->_elements[i] * other[i];
 			}
 
 			return result;
@@ -242,16 +242,16 @@ namespace duc{
 		
 		// > Indexing
 
-		constexpr type &operator[](const satisfy::Integer auto& index) DUC_RNOEXCEPT {
-			DUC_TEST_THROW(index < size() && index >= 0, "Index out of bounds.");
+		constexpr type &operator[](size_t index) DUC_RNOEXCEPT {
+			DUC_TEST_THROW(index < this->size() && index >= 0, "Index out of bounds.");
 
 			return _elements[index];
 		}
-		constexpr const type& operator[](const satisfy::Integer auto& index) DUC_CONST_RNOEXCEPT {
+		constexpr const type& operator[](size_t index) DUC_CONST_RNOEXCEPT {
 			return _elements[index];
 		}
 
-		constexpr type& at(satisfy::Integer auto index) {
+		constexpr type& at(size_t index) {
 			if (index >= signed(size()) || duc::abs(index) > size())
 				throw std::out_of_range("Index out of bounds.");
 
@@ -261,7 +261,7 @@ namespace duc{
 
 			return _elements[index];
 		}
-		constexpr const type& at(satisfy::Integer auto index) const {
+		constexpr const type& at(size_t index) const {
 			return this->at(index);
 		}
 		
@@ -320,7 +320,7 @@ namespace duc{
 	public:
 		DUC_SATISFIES(m * n > 0, "Matrix size must be greater than cero.");
 
-		using traits = trait::vectorial<m, n>;
+		using traits = traits::vectorial<m, n>;
 		using value_type = type;
 		using buffer_type = container<type, m * n>;
 

@@ -7,7 +7,7 @@
 #include <numeric>
 
 namespace duc {
-	namespace trait {
+	namespace traits {
 
 		template<uint16_t... dimentions>
 		constexpr uint16_t vectorial_rank = sizeof...(dimentions);

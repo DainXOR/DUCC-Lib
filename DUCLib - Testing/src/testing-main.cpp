@@ -1,6 +1,5 @@
 #include <iostream>
 
-
 #include <structures/vectorial.h>
 #include <structures/mtcomplex.h>
 #include <structures/polynomial.h>
@@ -8,22 +7,74 @@
 #include <functions/arithmetic.h>
 #include <utilities/mutils.h>
 
+//#include <experimental/sstring.h>
+#include <structures/data_structures.h>
+
 // #include <complex>
 // #include <string>
-// #include <tuple>
+#include <tuple>
 #include <cmath>
-#include <valarray>
 
 #define DUCLIB_LOG
 #include <macro_tools.h>							
 
-void propertiesTests();
+template<class structure, class string_type>
+void propertiesTests(string_type);
+void temp();
+
+namespace hola {
+	int division(int dividendo, int divisor) {
+		int a = 0;
+		return ((!(dividendo < divisor) && (a = 1 + division(dividendo - divisor, divisor))), a);
+	}
+}
+
+
+
 
 int main() {
-    /// // srand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+	std::cout << hola::division(27, 3) << "\n";
+
+
+	/*
+	using namespace duc::ex;
+	bi_tree<int> t(bi_tree<int>::createNode(1));
+	
+	volatile auto a = std::tuple{ 0, ",wdq", 34.2f};
+
+	t.insert(2, 0u);
+	t.insert(3, 1u);
+	t.insert(4, 0u, 0u);
+	t.insert(5, 1u, 0u);
+	t.insert(6, 1u, 1u);
+	t.insert(7, std::array{ 1ull, 0ull, 0ull });
+
+	//std::vector v = t.getAsArray(Traverse::IN_ORDER);
+	//for (auto node : v) {
+	//	std::cout << node->element << " -> ";
+	//}
+
+	std::cout << std::convertible_to<duc::traits::Queue, int>;
+	std::cout << "\n";
+	*/
+	return 0;
+}
+
+template<class structure, class string_type>
+void propertiesTests(string_type strName) {
+
+	std::cout << strName << ":\n";
+	//std::cout << "- Satisfies Vector: " << duc::satisfy::Vector<structure> << "\n";
+	std::cout << "- Is aggregate: " << std::is_aggregate_v<structure> << "\n";
+	//std::cout << "- Aggregate set r: " << std::is_aggregate_v<duc::vector<3, int>> << "\n";
+	
+}
+
+void temp() {
+	/// // srand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 	DUC_SATISFIES(_HAS_CXX23, "Required c++23 to run the library.");
 
-	propertiesTests();
+	//propertiesTests();
 	// duc::complex<> c0 = { ._imaginary = 3 };
 
 	duc::vector<3> v0 = { {10, 20, 30} };
@@ -58,7 +109,7 @@ int main() {
 	std::cout << num2 << " / " << den2 << "\n";
 	std::cout << num3 << " / " << den3 << "\n";
 	*/
-	
+
 	// auto nums = generateRandomNumbers<float, float>(1000, { 0.f, 16.f }, { 0.f, 16.f });
 	// 
 	// for (const auto& elem : nums) {
@@ -66,16 +117,4 @@ int main() {
 	// 		std::cout << "{" << n1 << ", " << n2 << "},";
 	// 	}, elem);
 	// }
-	
-	return 0;
-}
-
-
-void propertiesTests() {
-
-	std::cout << "Vector:\n";
-	std::cout << "- Satisfies Vector: " << duc::satisfy::Vector<duc::vector<>> << "\n";
-	std::cout << "- Aggregate default: " << std::is_aggregate_v<duc::vector<>> << "\n";
-	std::cout << "- Aggregate set r: " << std::is_aggregate_v<duc::vector<3, int>> << "\n";
-	
 }
