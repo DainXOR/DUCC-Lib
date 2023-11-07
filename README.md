@@ -1,7 +1,7 @@
 # DUCLib-Proyect
  Dain Universal C++ Library
 
-DUC: Universal C++ Lib
+DUC: Universal C++ Lib <br>
 CUD: C++ Utils Lib
 DTM: Template Math Lib
 DMP: Math and Physics Lib
