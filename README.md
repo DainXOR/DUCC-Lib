@@ -1,5 +1,4 @@
-# DUCLib-Proyect
-## Dain Universal C++ Library
+# Dain Universal C++ Library | DUCLib-Proyect
 
 
 ## Acronyms
