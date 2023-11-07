@@ -1,6 +1,10 @@
 #pragma once
 
 #define DUCLIB_MACRO_TOOLS
+#ifndef _DUCLIB_DEBUG_LEVEL
+#define _DUCLIB_DEBUG_LEVEL 0
+#endif // !_DUCLIB_DEBUG_LEVEL
+
 
 #if !defined(DUCLIB_MACRO_TOOLS)
 	constexpr auto DUCLIB_STT = 0;
@@ -161,11 +165,13 @@
 			#define DUC_RNOEXCEPT		noexcept
 			#define DUC_RDEPRECATE(msg) [[deprecate(msg)]]
 			#define DUC_RNORETURN		[[noreturn]]
+			#define DUC_RNODISCARD		[[nodiscard]]
 
 		#else
 			#define DUC_RNOEXCEPT
 			#define DUC_RDEPRECATE(msg)
 			#define DUC_RNORETURN
+			#define DUC_RNODISCARD
 		#endif
 
 		#define DUC_CONST_RNOEXCEPT	const DUC_RNOEXCEPT

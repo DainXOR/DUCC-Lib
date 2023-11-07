@@ -31,4 +31,9 @@ namespace duc::traits {
 	constexpr Queue operator|(Queue first, Queue second) {
 		return Queue(int(first) | int(second));
 	}
+
+	enum Graph {
+		NORMAL = 0b0,
+		DIRECTED = 0b1
+	};
 }

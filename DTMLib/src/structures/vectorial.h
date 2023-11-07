@@ -57,7 +57,7 @@ namespace duc{
 
 		template <typename vector_t>
 		constexpr vector operator+(const vector_t& other) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_THROW(this->size() == other.size(), "The vectors must have the same size.");
+			//DUC_TEST_THROW(this->size() == other.size(), "The vectors must have the same size.");
 
 			vector result = (*this);
 
@@ -243,7 +243,7 @@ namespace duc{
 		// > Indexing
 
 		constexpr type &operator[](size_t index) DUC_RNOEXCEPT {
-			DUC_TEST_THROW(index < this->size() && index >= 0, "Index out of bounds.");
+			//DUC_TEST_THROW(index < this->size() && index >= 0, "Index out of bounds.");
 
 			return _elements[index];
 		}
@@ -547,7 +547,7 @@ namespace duc{
 		constexpr uint16_t	rank() DUC_CONST_RNOEXCEPT	{ return traits::rank; }
 		constexpr auto		shape() DUC_CONST_RNOEXCEPT		{ return traits::shape; }
 		constexpr size_t	dimention(satisfy::Integer auto rankPos) DUC_CONST_RNOEXCEPT {
-			DUC_TEST_THROW((rankPos <= properties::rank) && (rankPos >= 0), "Rank outside tensor.\n");
+			//DUC_TEST_THROW((rankPos <= properties::rank) && (rankPos >= 0), "Rank outside tensor.\n");
 
 			return properties::shape[rankPos];
 		}
@@ -557,26 +557,26 @@ namespace duc{
 		constexpr type& operator()(satisfy::Integer auto... indexes) DUC_RNOEXCEPT {
 
 			constexpr uint16_t IndexCount = sizeof...(indexes);
-			DUC_TEST_THROW(IndexCount > 0, "No indexes provided.");
-			DUC_TEST_THROW(IndexCount <= rank(), "Amount of indexes provided exceed the tensor rank.");
+			//DUC_TEST_THROW(IndexCount > 0, "No indexes provided.");
+			//DUC_TEST_THROW(IndexCount <= rank(), "Amount of indexes provided exceed the tensor rank.");
 
 			constexpr std::array<size_t, IndexCount> IndexesArray = { indexes... };
 
-			DUC_TEST_THROW([&]() {
-				for (size_t i = 0; i < IndexCount; ++i) {
-					if (IndexesArray[i] >= shape(i)) {
-						return false;
-					}
-				}
-				return true;
-			}(), "The indexes provided does not match the tensor shape.");
+			//DUC_TEST_THROW([&]() {
+			//	for (size_t i = 0; i < IndexCount; ++i) {
+			//		if (IndexesArray[i] >= shape(i)) {
+			//			return false;
+			//		}
+			//	}
+			//	return true;
+			//}(), "The indexes provided does not match the tensor shape.");
 
-			constexpr std::array Multipliers = math_util::calculateMultipliers(shape());
+			constexpr std::array Multipliers = mutil::calculateMultipliers(shape());
 			size_t index = 0;
 
-			for (uint16_t i = 0; i <= rank(); i++) {
-				DUC_TEST_THROW(IndexesArray[i] >= 0, "Negative indexes are not allowed.");
-				DUC_TEST_THROW(IndexesArray[i] < shape(i), "The index is outside the tensor.\n(Max =" + duc::util::toChars(shape(i) - 1) + ", Attempted[" + duc::util ::toChars(IndexesArray[i]) + "])");
+			for (uint16_t i = 0; i <= this->rank(); i++) {
+				//DUC_TEST_THROW(IndexesArray[i] >= 0, "Negative indexes are not allowed.");
+				//DUC_TEST_THROW(IndexesArray[i] < shape(i), "The index is outside the tensor.\n(Max =" + duc::util::toChars(shape(i) - 1) + ", Attempted[" + duc::util::toChars(IndexesArray[i]) + "])");
 
 				index += IndexesArray[i] * Multipliers[i];
 			}
@@ -589,7 +589,7 @@ namespace duc{
 		}
 
 		constexpr type& operator [](size_t index) DUC_RNOEXCEPT {
-			DUC_TEST_THROW(index < size(), "The index is outside the tensor. (Max = " + duc::util::toChars(size() - 1) + ")");
+			//DUC_TEST_THROW(index < size(), "The index is outside the tensor. (Max = " + duc::util::toChars(size() - 1) + ")");
 
 			return _elements[index];
 		}
@@ -606,8 +606,8 @@ namespace duc{
 
 		// > Math operations functions and operators
 		tensor& operator+(const tensor& other) DUC_RNOEXCEPT {
-			DUC_TEST_ERROR(math_util::isTensorsShapeCompatible(rank(), shape(), other.shape()),
-						   "The tensors must have a compatible shape.");
+			//DUC_TEST_ERROR(mutil::isTensorsShapeCompatible(rank(), shape(), other.shape()),
+			//			   "The tensors must have a compatible shape.");
 
 			for (size_t i = 0; i < this->size(); i++) {
 				_elements[i] += other[i];
@@ -625,9 +625,9 @@ namespace duc{
 		}
 
 		tensor& operator-(const tensor& other) {
-			DUC_TEST_ERROR(math_util::isTensorsShapeCompatible(rank(), shape(), other.shape()),
-						   "The tensors must have a compatible shape."
-			);
+			//DUC_TEST_ERROR(mutil::isTensorsShapeCompatible(rank(), shape(), other.shape()),
+			//			   "The tensors must have a compatible shape."
+			//);
 
 			for (size_t i = 0; i < this->size(); i++) {
 				_elements[i] -= other[i];

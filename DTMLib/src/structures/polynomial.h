@@ -109,7 +109,7 @@ namespace duc {
 	class polynomial {
 	public:
 		using ec_type = char*;
-		using va_type = math_util::pair_any<char, type>[];
+		using va_type = duc::pair_any<char, type>[];
 
 
 	public:

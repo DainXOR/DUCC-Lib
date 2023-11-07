@@ -4,34 +4,9 @@
 #include "macro_tools.h"
 
 
-namespace duc::math_util {
+namespace duc::mutil {
 
 	/// > Structures
-
-	template<typename type>
-	struct pair_equal {
-		type x;
-		type y;
-	};
-	template<typename type1, typename type2>
-	struct pair_any {
-		type1 x;
-		type2 y;
-	};
-
-	template<typename type>
-	struct triplet_equal {
-		type x;
-		type y;
-		type z;
-	};
-	template<typename type1, typename type2, typename type3>
-	struct triplet_any {
-		type1 x;
-		type2 y;
-		type3 z;
-	};
-
 
 	/// > Functions
 
@@ -46,13 +21,17 @@ namespace duc::math_util {
 		double result = 1;
 
 		while (exponent > 0) {
-			(((exponent & 1) == 1) && (result *= base));
-			//if ((exponent & 1) == 1) { result *= base; } // exp. is odd
+			(exponent & 0b1) && (result *= base); // Checking if exp. is odd
 			base *= base;
 			exponent >>= 1; // y = y / 2;
 		}
 
 		return result;
+	}
+	constexpr double powerToInteger(double base, int64_t exponent) noexcept {
+		int8_t expSign = ((exponent > 0) * 2) - 1;
+		double result = powerPositiveInteger(base, exponent * expSign);
+		return expSign == 1 ? result : 1 / result;
 	}
 
 	template <typename size_type, size_t size>
@@ -80,5 +59,9 @@ namespace duc::math_util {
 		return true;
 	}
 
+	/// > Idk
+
+	template<size_t precision>
+	constexpr double error = 1 / powerPositiveInteger(10, precision);
 
 }

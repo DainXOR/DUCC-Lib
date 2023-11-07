@@ -1,4 +1,6 @@
 #pragma once
+#include <simple_structures.h>
+#include <math.h>
 #include <unordered_map>
 
 // #include <cmath>
@@ -8,7 +10,9 @@
 
 namespace duc {
 
-	const inline std::unordered_map<uint16_t, uint8_t> squares = {
+	/// \Error	Not very smart...
+	DUC_RDEPRECATE("Just don't") const inline std::unordered_map<uint16_t, uint8_t> 
+		squares = {
 		{4, 2}, {9, 3}, {16, 4}, {25, 5}, {36, 6}, {49, 7}, {64, 8}, {81, 9}, {100, 10}, {121, 11}, 
 		{144, 12}, {169, 13}, {196, 14}, {225, 15}, {256, 16}, {289, 17}, {324, 18}, {361, 19}, {400, 20}, {441, 21}, 
 		{484, 22}, {529, 23}, {576, 24}, {625, 25}, {676, 26}, {729, 27}, {784, 28}, {841, 29}, {900, 30}, {961, 31}, 
@@ -23,33 +27,24 @@ namespace duc {
 
 	// constexpr auto pow(const auto& base, const auto& exponent);
 
-	/// \Todo	Write a better algorithm
-	constexpr auto abs(satisfy::Decimal auto num) {
-		return num < 0 ? -num : num;
-	}
+	/// \Note	Candidate 1. Maybe faster with integers than second candidate.
+	/// \Warn	May be removed in the future.
+	/// \See	A more generic abs function, @abs(^Arithmetic).
 	constexpr auto abs(satisfy::Integer auto num) {
 		constexpr uint16_t CHARBIT = 8;
 		const int64_t mask = num >> (sizeof(decltype(num)) * CHARBIT - 1);
 		return ((num + mask) ^ mask);
 	}
+	/// \Note	Candidate 2. Possibly permanent.
+	/// 
+	/// \Warn	Requires $num type to be comparable to 0.
+	constexpr auto abs(satisfy::Arithmetic auto num) noexcept { return num * ((num > 0) - (num < 0)); }
 
-	constexpr uint16_t digits(int64_t num) {
-		uint16_t i = 0;
-		do {
-			num /= 10;
-			i++;
-		} while (num != 0);
-		return i;
-	}
 	constexpr int64_t min(int64_t x, int64_t y) {
 		return y ^ ((x ^ y) & -(x < y));
 	}
 	constexpr int64_t max(int64_t x, int64_t y) {
 		return x ^ ((x ^ y) & -(x < y));
-	}
-
-	constexpr auto splitDecimal(satisfy::Real auto num) {
-		return math_util::pair_any{ int64_t(num), num - int64_t(num) };
 	}
 	
 	constexpr int64_t ceil(satisfy::Decimal auto number) {
@@ -63,26 +58,42 @@ namespace duc {
 		int8_t negativeFix = (number < 0) * -1;
 		return int64_t(number) + negativeFix;
 	}
-	constexpr int64_t round(satisfy::Decimal auto number) {
-		return (number > 0 && number - int64_t(number) >= 0.5f) ||
-			number < 0 && duc::abs(number) - duc::abs(int64_t(number)) <= 0.5f ?
 
+	constexpr auto splitDecimal(satisfy::Real auto num) {
+		return duc::pair{ duc::floor(num), num - duc::floor(num) };
+	}
+
+	constexpr int64_t round(satisfy::Decimal auto number) {
+		return duc::splitDecimal(number).second >= 0.5f ?
 			duc::ceil(number) :
 			duc::floor(number);
 	}
-	constexpr double round(satisfy::Decimal auto number, uint16_t precision) {
-		double decimals = duc::abs(number) - duc::abs(int64_t(number));
-		uint16_t mult = math_util::powerPositiveInteger(10, precision);
+	constexpr double round(satisfy::Decimal auto number, uint16_t precision) noexcept {
+		auto [integer, decimals] = duc::splitDecimal(number);
 
-		decimals *= mult;
-		decimals = int64_t(decimals) / double(mult);
+		double mult = duc::mutil::powerPositiveInteger(10, precision);
+		decimals = duc::floor(decimals * mult) / mult;
 
-		return int64_t(number) + decimals;
+		return integer + decimals;
 	}
 	
 	constexpr double mod(double num, double div) {
 		int64_t mult = duc::floor(num / div);
 		return num - (div * double(mult));
+	}
+	constexpr uint16_t digits(int64_t num) {
+		uint16_t i = 0;
+		int64_t num2 = 1;
+		num = duc::abs(num);
+		do {
+			num2 *= 10;
+			i++;
+		} while (num2 < num);
+		return i;
+	}
+	template<bool>
+	constexpr uint16_t digits(int64_t num) {
+		return duc::floor(log10(num));
 	}
 
 	constexpr auto greatestCommonDivisor(const auto& a, const auto& b) {
@@ -91,23 +102,29 @@ namespace duc {
 
 	///	\Todo	Implement efficient algorith for each power case.
 
-	constexpr double pow(satisfy::Real auto base, const satisfy::Integer auto& exponent) {
+	constexpr double pow(satisfy::Real auto base, satisfy::UnsignedInteger auto exponent) {
+		if (exponent == 1 || base == 1)
+			return base;
+
+		return mutil::powerPositiveInteger(base, exponent);
+	}
+	constexpr double pow(satisfy::Real auto base, satisfy::Integer auto exponent) {
 		if (exponent > 0) {
 			if (exponent == 1 || base == 1)
 				return base;
 
-			return math_util::powerPositiveInteger(base, exponent);
+			return mutil::powerPositiveInteger(base, exponent);
 		}
 		
 		if (exponent == 0)
 			return 1;
 
-		return math_util::powerPositiveInteger(1 / base, -exponent);
+		return mutil::powerPositiveInteger(1 / base, -exponent);
 		
 	}
-	constexpr double pow(satisfy::Real auto base, const satisfy::Decimal auto& exponent) {
-		return base * base;
-	}
+	//constexpr double pow(satisfy::Real auto base, satisfy::Decimal auto exponent) {
+	//	return base * base;
+	//}
 
 	//// Complex base, arithmetic exponent
 	//auto pow(satisfy::StrictComplex auto base, const satisfy::Real auto& exponent) {

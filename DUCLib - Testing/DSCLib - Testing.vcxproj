@@ -74,6 +74,22 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>EnableAllWarnings</WarningLevel>
@@ -82,7 +98,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;$(SolutionDir)DCLib\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;$(SolutionDir)DCLib;$(SolutionDir)DTPLib\src;</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <Optimization>Disabled</Optimization>
@@ -107,7 +123,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;$(SolutionDir)DCLib\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;$(SolutionDir)DCLib;$(SolutionDir)DTPLib\src;</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <Optimization>Full</Optimization>
@@ -131,7 +147,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;$(SolutionDir)DCLib\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;$(SolutionDir)DCLib;$(SolutionDir)DTPLib\src;</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <TreatWarningAsError>false</TreatWarningAsError>
@@ -157,7 +173,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;$(SolutionDir)DCLib\src;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DUCLib\src;$(SolutionDir)DMPLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)CUDLib\src;$(SolutionDir)DCLib;$(SolutionDir)DTPLib\src;</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <TreatWarningAsError>false</TreatWarningAsError>
@@ -186,6 +202,9 @@
     </ProjectReference>
     <ProjectReference Include="..\DMPLib\DMPLib.vcxproj">
       <Project>{a433d2cd-3c48-4437-89e1-252d9a76ce05}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\DTLib\DTLib.vcxproj">
+      <Project>{0f797d33-7112-48b2-8056-326eb1066311}</Project>
     </ProjectReference>
     <ProjectReference Include="..\DTMLib\DTMLib.vcxproj">
       <Project>{e3d161df-5ea4-466d-863e-fe6cc2ec6b0b}</Project>

@@ -178,6 +178,8 @@
     <ClInclude Include="src\general_utils.h" />
     <ClInclude Include="src\macro_tools.h" />
     <ClInclude Include="src\experimental.h" />
+    <ClInclude Include="src\simple_structures.h" />
+    <ClInclude Include="src\utils_declarations.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

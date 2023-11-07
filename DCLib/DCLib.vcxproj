@@ -177,23 +177,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dclib.h" />
-    <ClInclude Include="src\experimental\linked_lists.h" />
-    <ClInclude Include="src\experimental\nodes.h" />
-    <ClInclude Include="src\structures\collections.h" />
-    <ClInclude Include="src\utilities\collection_base.h" />
-    <ClInclude Include="src\structures\data_structures.h" />
-    <ClInclude Include="src\experimental\sstring.h" />
-    <ClInclude Include="src\experimental\tree.h" />
-    <ClInclude Include="src\utilities\traits.h" />
+    <ClInclude Include="dclib\experimental\dijkstra.h" />
+    <ClInclude Include="dclib\experimental\graph.h" />
+    <ClInclude Include="dclib\experimental\linked_lists.h" />
+    <ClInclude Include="dclib\experimental\nodes.h" />
+    <ClInclude Include="dclib\structures\collections.h" />
+    <ClInclude Include="dclib\utilities\collection_base.h" />
+    <ClInclude Include="dclib\structures\data_structures.h" />
+    <ClInclude Include="dclib\experimental\sstring.h" />
+    <ClInclude Include="dclib\experimental\tree.h" />
+    <ClInclude Include="dclib\utilities\conventions.h" />
+    <ClInclude Include="dclib\utilities\traits.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\experimental\nodes.cpp" />
-    <ClCompile Include="src\experimental\queue.h" />
-    <ClCompile Include="src\structures\collections.cpp" />
-    <ClCompile Include="src\structures\data_structures.cpp" />
+    <ClCompile Include="dclib\structures\simple_structures.cpp" />
+    <ClCompile Include="dclib\experimental\graph.cpp" />
+    <ClCompile Include="dclib\experimental\nodes.cpp" />
+    <ClCompile Include="dclib\experimental\queue.h" />
+    <ClCompile Include="dclib\structures\collections.cpp" />
+    <ClCompile Include="dclib\structures\data_structures.cpp" />
     <ClCompile Include="dclib.cpp" />
-    <ClCompile Include="src\experimental\sstring.cpp" />
-    <ClCompile Include="src\experimental\tree.cpp" />
+    <ClCompile Include="dclib\experimental\sstring.cpp" />
+    <ClCompile Include="dclib\experimental\tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CUDLib\CUDLib.vcxproj">

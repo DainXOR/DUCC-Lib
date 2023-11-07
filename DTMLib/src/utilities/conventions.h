@@ -23,7 +23,7 @@ namespace duc::satisfy {
 	concept Real = Integer<value_type> || Decimal<value_type>;
 
 	template<typename value_type>
-	concept Arithmetic = requires(value_type A, value_type B, double C) {
+	concept Arithmetic = Real<value_type> || requires(value_type A, value_type B, double C) {
 			{ A + B }; // -> std::convertible_to<value_type>;
 			{ A - B }; // -> std::convertible_to<value_type>;
 			{ A * B }; // -> std::convertible_to<value_type>;

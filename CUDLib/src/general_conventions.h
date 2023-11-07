@@ -33,5 +33,13 @@ namespace duc::satisfy {
 		Indexable<container_type>;
 	};
 
-	
+	template<typename return_t, typename ...args, template <class, class...> class functor>
+	concept Callable = requires(functor<return_t, args...> f, args ...argv) {
+		{ f(argv...) } -> std::convertible_to<return_t>;
+	};
+
+	template<template <class, auto...> class functor, typename return_t, typename ...args>
+	concept ConstexprCallable = requires(functor <return_t, args{}...> f) {
+		{ f() } -> std::convertible_to<return_t>;
+	};
 }
