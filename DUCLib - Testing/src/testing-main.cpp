@@ -1,31 +1,36 @@
 #include <iostream>
 
-#include <structures/vectorial.h>
-#include <structures/mtcomplex.h>
-#include <structures/polynomial.h>
+#define DUCLIB_LOG
+#include <cudlib/macro_tools.h>
 
-#include <functions/algorithm.h>
-#include <functions/arithmetic.h>
-#include <utilities/mutils.h>
+#include <dtmlib/structures/vectorial.h>
+#include <dtmlib/structures/mtcomplex.h>
+#include <dtmlib/structures/polynomial.h>
 
-//#include <experimental/sstring.h>
-#include <dclib/structures/data_structures.h>
+#include <dtmlib/functions/algorithm.h>
+#include <dtmlib/functions/arithmetic.h>
+
+#include <dtmlib/utilities/mutils.h>
+
+//#include <dclib/experimental/sstring.h>
+
+#include <C:/dev/cpp/libs/DUCLib - Proyect/DCLib/src/dclib/structures/data_structures.h>
 #include <dclib/utilities/conventions.h>
 #include <dclib/experimental/dijkstra.h>
-
 
 // #include <complex>
 // #include <string>
 #include <tuple>
 #include <cmath>
 #include <numeric>
+#include <queue>
 
-#define DUCLIB_LOG
-#include <macro_tools.h>							
+
 
 template<class structure, class string_type>
 void propertiesTests(string_type);
 void temp();
+
 
 namespace hola {
 	int division(int dividendo, int divisor) {
@@ -48,6 +53,7 @@ namespace hola {
 	using rstring = char[];
 
 	template<size_t max = 255, size_t min = 0>
+	//requires (max > min)
 	class caesar {
 		static size_t shift;
 
@@ -56,21 +62,22 @@ namespace hola {
 			return shift = value;
 		}
 
-		static std::string apply(std::string text, size_t shiftValue = shift) {
-			shift = shiftValue;
+		static std::string apply(std::string text, size_t key = shift) {
+			shift = key;
+			uint8_t c = 0;
 
 			for (size_t i = 0; i < text.size(); i++) {
-				uint8_t value = ((text[i] + shift) % (max - min)) + min;
-				text[i] = value;
+				uint8_t value = ((uint8_t(text[i]) + shift) % (max - min)) + min;
+				c = value;
 			}
 			return text;
 		}
-		static std::string reverse(std::string text, size_t shiftValue = shift) {
-			shift = shiftValue;
+		static std::string reverse(std::string text, size_t key) {
+			key = -key;
 
 			for (size_t i = 0; i < text.size(); i++) {
-				uint8_t value = (text[i] - shift) % (max - min);
-				value += value < 0 ? max : min;
+				uint8_t value = (uint8_t(text[i]) - key);
+				value += value < 0 ? -1 - value : value;
 				text[i] = value;
 			}
 			return text;
@@ -80,15 +87,23 @@ namespace hola {
 	template<size_t max, size_t min>
 	size_t caesar<max, min>::shift = 0;
 
-	template<size_t p1, size_t p2, size_t p3, size_t g>
+	template<size_t p1, size_t p2, size_t p3 /* Big */, size_t g /* Small */>
 	class diffie_hellmann {
 		size_t ka;
 		size_t kb;
 
 	public:
 		diffie_hellmann() {
+			// Server			||		  Client1       ||       Client2       ||       Client3 ...
+			// g, p3			->
+			//					<-		 g^a % p3			    g^b % p3 	           g^c % p3 ...
+			// ga, gb, gc, ...	->	   gb^a, gc^a...	      ga^gc^... % p3	    ga^gb^... % p3 ...
+			//                          gabc... % p3		   gabc... % p3	         gabc... % p3 ...
+
 			constexpr size_t gna = duc::pow(g, p1);
 			constexpr size_t gnb = duc::pow(g, p2);
+
+
 			constexpr size_t atb = gna % p3;
 			constexpr size_t bta = gnb % p3;
 
@@ -115,24 +130,45 @@ namespace std {
 
 		return result;
 	}
+	template<class t>
+	string to_string(duc::ex::xnode<t> node) {
+		string result;
+
+		result += "[";
+		result += to_string(node.getID());
+		result += ": "; 
+		result += to_string(node.getElement()); 
+		result += "]";
+
+		return result;
+	}
+
+	template<class T, class CharT>
+	struct std::formatter<std::vector<T>, CharT> : std::formatter<const char*, CharT> {
+
+		template<class FormatContext>
+		auto format(std::vector<T> v, FormatContext& fc) const {
+			return std::formatter<const char*, CharT>::format(std::to_string(v).c_str(), fc);
+		}
+	};
+	template<class T, size_t s, class CharT>
+	struct std::formatter<std::array<T, s>, CharT> : std::formatter<const char*, CharT> {
+
+		template<class FormatContext>
+		auto format(std::array<T, s> a, FormatContext& fc) const {
+			return std::formatter<const char*, CharT>::format(std::to_string(a).c_str(), fc);
+		}
+	};
+	template<class T, class CharT>
+	struct std::formatter<duc::ex::xnode<T>, CharT> : std::formatter<const char*, CharT> {
+
+		template<class FormatContext>
+		auto format(duc::ex::xnode<T> n, FormatContext& fc) const {
+			return std::formatter<const char*, CharT>::format(std::to_string(n).c_str(), fc);
+		}
+	};
 }
 
-template<class T, class CharT>
-struct std::formatter<std::vector<T>, CharT> : std::formatter<const char*, CharT> {
-
-	template<class FormatContext>
-	auto format(std::vector<T> v, FormatContext& fc) const {
-		return std::formatter<const char*, CharT>::format(std::to_string(v).c_str(), fc);
-	}
-};
-template<class T, size_t s, class CharT>
-struct std::formatter<std::array<T, s>, CharT> : std::formatter<const char*, CharT> {
-
-	template<class FormatContext>
-	auto format(std::array<T, s> a, FormatContext& fc) const {
-		return std::formatter<const char*, CharT>::format(std::to_string(a).c_str(), fc);
-	}
-};
 
 template<uint8_t option>
 void cipherTest() {
@@ -145,7 +181,7 @@ void cipherTest() {
 
 		std::cout << str << "\n";
 		std::cout << (enc = c1.apply(str)) << "\n";
-		std::cout << c1.reverse(enc) << "\n";
+		//std::cout << c1.reverse(enc) << "\n";
 	}
 	else if constexpr (option == 2) {
 		hola::diffie_hellmann<29, 19, 53, 2> dh;
@@ -160,51 +196,67 @@ using t_info = duc::util::type_info<t>;
 template<auto v>
 using v_info = duc::util::var_info<v>;
 
-void graphTest() {
-	/*
-	duc::ex::graph<uint16_t> g1;
-	g1.getNode(0)->getConnections();
-
-	g1.emplaceNode(10);
-	g1.emplaceNode(11);
-	g1.emplaceNode(12);
-	g1.emplaceNode(13);
-
-	//t_info<duc::ex::graph<int>>;
-	v_info<0>;
-
-	constexpr bool r = duc::satisfy::WeightedNode<duc::ex::wnode<int>>;
-
-	//for (auto &node : g1.getNodes()) {
-	//	std::cout << "Node " << node.getID() << ": ";
-	//	std::cout << node.getElement();
-	//	std::cout << "\n";
-	//}
-	
-	g1.createConnection(1, 2, 54);
-	g1.createConnection(1, 3, 21);
-	g1.createConnection(1, 4, 122);
-
-	g1.createConnection<false>(2, 4, 62);
-	g1.createConnection(2, 3, 12);
-
-	g1.createConnection(3, 4, 5);
-
-	//duc::ex::alg::dijkstra<duc::ex::graph<int>> d = {};
-
-	d.setGraph(g1);
-	auto test = d.search(1, 4);
-
-
-	//for (auto id : g1.getNodesIDs()) {
-	//	std::puts(std::format("Node {0}: ", id).c_str());
-	//	for (auto &[id, route] : g1.getRoutesOf(id)) {
-	//		std::puts(std::format("- To {0}: <{1}>", id, route).c_str());
-	//	}
-	//}
-	*/
+template<class type, duc::traits::Graph traits>
+void printGraphData(duc::ex::graph<type, traits> graph) {
+	for (auto id1 : graph.getNodesIDs()) {
+		std::puts(std::format("Node {0}: ", id1).c_str());
+		for (auto &[id2, route] : graph.getRoutesOf(id1)) {
+			std::puts(std::format("- To {0}: <{1}>", id2, route.first).c_str());
+		}
+	}
+	return;
 }
 
+template <class compare_t, template <class> class comp = std::less>
+struct compare_first {
+	[[nodiscard]]
+	constexpr bool operator()(const auto& left, const auto& right) const noexcept {
+		return comp<compare_t>{}(left.first, right.first);
+	}
+};
+template <class compare_t, template <class> class comp = std::less>
+struct compare_second {
+	[[nodiscard]]
+	constexpr bool operator()(const auto& left, const auto& right) const noexcept {
+		return comp<compare_t>{}(left.second, right.second);
+	}
+};
+
+void graphTest() {
+	constexpr duc::traits::Graph gt = duc::traits::Graph::DIRECTED | duc::traits::Graph::WEIGHTED;
+	duc::ex::graph<uint32_t, gt> g1 = {};
+
+	g1.emplace(10);
+	g1.emplace(11);
+	g1.emplace(12);
+	g1.emplace(13);
+	g1.emplace(14);
+	g1.emplace(15);
+	
+	g1.createConnection(1, 2, 16);
+	g1.createConnection(1, 3, 12);
+	g1.createConnection(1, 5, 21);
+
+	g1.createConnection(2, 5, 6);
+	g1.createConnection(2, 6, 1);
+
+	g1.createConnection(3, 2, 1);
+	g1.createConnection(3, 4, 5);
+
+	g1.createConnection(4, 5, 3);
+
+	g1.createConnection(6, 4, 2);
+
+	printGraphData(g1);
+
+	duc::ex::alg::dijkstra algorithm = { g1 };
+	auto finalRoute = algorithm.search(1, 5);
+
+	std::cout << "\n";
+	std::cout << finalRoute.second << ": ";
+	std::cout << std::to_string(finalRoute.first) << "\n";
+	//auto test = d.search(1, 4);
+}
 
 template<class, int64_t number>
 struct hyper_eleven {
@@ -219,10 +271,7 @@ struct hyper_eleven {
 	}
 };
 
-int main() {
-
-	//std::cout << std::to_string(duc::alg::prime_sequence<100>::get()) << "\n";
-	
+void templateBending() {
 	duc::util::expansion t1 = duc::util::expand<5, 1>;
 	duc::util::expansion t2 = duc::util::replicate<4, '1', '2'>;
 	duc::util::expansion t3 = duc::util::clone<4, '1', '2'>;
@@ -235,11 +284,28 @@ int main() {
 	constexpr bool hmmm_ = hyper_eleven<bool, 11111111>{}();
 	constexpr auto digs = duc::digits(11111111);
 
-	std::cout << typeid(t7).name() << "\n";
+	//std::cout << typeid(t7).name() << "\n";
 
-	constexpr bool tdf = duc::satisfy::ConstexprCallable<duc::util::is_prime, bool, int64_t>;
+	constexpr bool tdf = duc::satisfy::ConstexprCallable<hyper_eleven, bool, int64_t>;
+	//std::cout << std::to_string(duc::alg::prime_sequence<100>::get()) << "\n";
+}
 
-	graphTest();
+void printNodeAndSiblings(auto* parent) {
+	std::cout << parent->getID() << ">-(" << parent->getElement() << ") -> ";
+
+	for (size_t i = 0; i < parent->getSiblingCount(); i++) {
+		std::cout << "[" << parent->getSibling(i)->getID() << ": "
+					<< parent->getSibling(i)->getElement() << "] | ";
+	}
+	std::cout << "\n";
+	return;
+}
+
+
+
+int main() {
+
+	//graphTest();
 	//mainDijkstra();
 	//cipherTest<2>();
 
@@ -269,22 +335,32 @@ int main() {
 	
 	volatile auto a = std::tuple{ 0, ",wdq", 34.2f};
 
-	t.insert(2, 0u);
+	t.insert(2, 1u);
 	t.insert(3, 1u);
-	t.insert(4, 0u, 0u);
+	t.insert(10, 0u);
+
+	t.insert(4, 1u, 1u);
 	t.insert(5, 1u, 0u);
 	t.insert(6, 1u, 1u);
-	t.insert(7, std::array{ 1ull, 0ull, 0ull });
+	t.insert(8, 1u, 1u, 1u);
+	t.insert(6, 1u, 1u);
+	t.insert(6, 0u, 0u);
+	t.insert(6, 0u, 0u, 0u);
+	t.insert(7, std::array{ 1ull, 1ull, 1ull });
+	t.insert(7, std::array{ 1ull, 1ull, 1ull, 1ull });
 
-	//std::vector v = t.getAsArray(Traverse::IN_ORDER);
-	//for (auto node : v) {
-	//	std::cout << node->element << " -> ";
-	//}
+	std::vector v = t.getAsArray(duc::traits::Traverse::IN_ORDER);
+	for (auto node : v) {
+		std::cout << node->element << " -> ";
+	}
+	std::cout << "\n\n";
 
-	std::cout << std::convertible_to<duc::traits::Queue, int>;
+	std::cout << t.depth();
 	std::cout << "\n";
 	*/
+
 	return 0;
+
 }
 
 template<class structure, class string_type>

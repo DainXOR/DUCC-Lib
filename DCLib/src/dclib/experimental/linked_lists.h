@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../utilities/collection_base.h"
 #include "nodes.h"
 

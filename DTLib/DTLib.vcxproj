@@ -85,6 +85,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)CUDLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)DCLib\src;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,6 +110,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)CUDLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)DCLib\src;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,6 +135,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)CUDLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)DCLib\src;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,6 +160,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)CUDLib\src;$(SolutionDir)DTMLib\src;$(SolutionDir)DCLib\src;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,8 +178,10 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="result.hpp" />
+    <ClInclude Include="src\dtplib\simple_cipher\reticent.hpp" />
     <ClInclude Include="src\dtplib.h" />
-    <ClInclude Include="src\simple_cipher\caesar.h" />
+    <ClInclude Include="src\dtplib\simple_cipher\caesar.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CUDLib\CUDLib.vcxproj">
@@ -187,6 +193,10 @@
     <ProjectReference Include="..\DTMLib\DTMLib.vcxproj">
       <Project>{e3d161df-5ea4-466d-863e-fe6cc2ec6b0b}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="result.cpp" />
+    <ClCompile Include="src\dtplib\simple_cipher\reticent.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

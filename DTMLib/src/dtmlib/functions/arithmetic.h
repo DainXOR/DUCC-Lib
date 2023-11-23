@@ -1,8 +1,8 @@
 #pragma once
-#include <simple_structures.h>
 #include <math.h>
 #include <unordered_map>
 
+#include <cudlib/simple_structures.h>
 // #include <cmath>
 
 #include "../utilities/conventions.h"

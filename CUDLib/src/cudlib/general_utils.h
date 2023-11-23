@@ -1,9 +1,9 @@
 #pragma once
-#include "utils_declarations.h"
-
 #include <stdint.h>
 #include <string>
 #include <cmath>
+
+#include "utils_declarations.h"
 
 namespace duc::util {
 
@@ -83,7 +83,7 @@ namespace duc::util {
 			else return replicator<count - 1>(duc::util::expansion<args...>{}, duc::util::expansion<args...>{});
 		}
 		template<int count, auto ... args, auto ... args2>
-		constexpr auto replicator(duc::util::expansion<args...> o, duc::util::expansion<args2...> r) {
+		constexpr auto replicator(duc::util::expansion<args...> o, duc::util::expansion<args2...>) {
 			if constexpr (count <= 1) return duc::util::expansion<args..., args2...>{};
 			else return replicator<count - 1>(o, duc::util::expansion<args..., args2...>{});
 		}

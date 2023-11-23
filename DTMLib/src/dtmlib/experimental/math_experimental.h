@@ -1,12 +1,15 @@
 #pragma once
-#include <macro_tools.h>
+#include <array>
+#include <vector>
+#include <map>
+
+#include <cudlib/macro_tools.h>
+
 #include "../functions/algorithm.h"
 #include "../utilities/conventions.h"
 #include "../utilities/template_traits.h"
 
-#include <array>
-#include <vector>
-#include <map>
+
 
 namespace duc::ex {
 	

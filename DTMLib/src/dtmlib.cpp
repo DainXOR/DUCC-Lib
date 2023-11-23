@@ -1,5 +1,5 @@
 #include "dtmlib.h"
 
-namespace dtm {
+namespace duc {
 	
 }

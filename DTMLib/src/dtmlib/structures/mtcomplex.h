@@ -1,14 +1,14 @@
 #pragma once
+#include <cudlib/macro_tools.h>
 
 #include "../utilities/conventions.h"
 
-#include <macro_tools.h>
+
 
 namespace duc {
-	template<satisfy::Real type = double>
+	template<class type = double>
 	struct imaginary {
 		type value = 0;
-
 
 
 	};

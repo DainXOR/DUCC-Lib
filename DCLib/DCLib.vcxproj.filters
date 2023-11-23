@@ -15,69 +15,66 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dclib\experimental\sstring.h">
+    <ClInclude Include="src\dclib\experimental\sstring.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\structures\collections.h">
+    <ClInclude Include="src\dclib\structures\collections.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\structures\data_structures.h">
+    <ClInclude Include="src\dclib\structures\data_structures.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\experimental\nodes.h">
+    <ClInclude Include="src\dclib\experimental\nodes.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\experimental\linked_lists.h">
+    <ClInclude Include="src\dclib\experimental\linked_lists.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\experimental\tree.h">
+    <ClInclude Include="src\dclib\experimental\tree.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\utilities\collection_base.h">
+    <ClInclude Include="src\dclib\utilities\collection_base.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\utilities\traits.h">
+    <ClInclude Include="src\dclib\utilities\traits.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib.h">
+    <ClInclude Include="src\dclib.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\experimental\graph.h">
+    <ClInclude Include="src\dclib\experimental\graph.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\utilities\conventions.h">
+    <ClInclude Include="src\dclib\utilities\conventions.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="dclib\experimental\dijkstra.h">
+    <ClInclude Include="src\dclib\experimental\dijkstra.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dclib.cpp">
+    <ClCompile Include="src\dclib.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="dclib\experimental\sstring.cpp">
+    <ClCompile Include="src\dclib\experimental\sstring.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="dclib\structures\collections.cpp">
+    <ClCompile Include="src\dclib\structures\collections.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="dclib\structures\data_structures.cpp">
+    <ClCompile Include="src\dclib\structures\data_structures.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="dclib\experimental\nodes.cpp">
+    <ClCompile Include="src\dclib\experimental\nodes.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="dclib\experimental\tree.cpp">
+    <ClCompile Include="src\dclib\experimental\tree.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="dclib\experimental\queue.h">
+    <ClCompile Include="src\dclib\experimental\queue.h">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="dclib\experimental\graph.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="dclib\structures\simple_structures.cpp">
+    <ClCompile Include="src\dclib\experimental\graph.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>

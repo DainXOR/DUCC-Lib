@@ -1,6 +1,8 @@
 #pragma once
+#include <type_traits>
 
-#include <general_conventions.h>
+#include <cudlib/general_conventions.h>
+
 #include "template_traits.h"
 
 /// \Todo Rename file to conventions
@@ -107,7 +109,7 @@ namespace duc::satisfy {
 	concept Vectorial = Vector<value_type> || Matrix<value_type> || Tensor<value_type> || VectorialSpace<value_type>;
 
 	template<typename value_type>
-	concept VectorialProperties = requires{
+	concept VectorialProperties = requires {
 		Integer<decltype(value_type::size)>;
 		Integer<decltype(value_type::rank)>;
 		Indexable<decltype(value_type::shape)>;

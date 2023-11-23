@@ -3,12 +3,16 @@
 #include <array>
 //#include <vector>
 
-#include <utilities/conventions.h>
-#include <functions/arithmetic.h>
+#include <cudlib/general_utils.h>
+#include <cudlib/general_conventions.h>
+#include <cudlib/macro_tools.h>
 
-#include <general_utils.h>
-#include <general_conventions.h>
-#include <macro_tools.h>
+#include "../utilities/conventions.h"
+#include "../functions/arithmetic.h"
+
+
+
+
 
 namespace duc{
 	/// > Declarations

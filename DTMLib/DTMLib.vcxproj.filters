@@ -18,34 +18,34 @@
     <ClInclude Include="src\dtmlib.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\conventions.h">
+    <ClInclude Include="src\dtmlib\utilities\conventions.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\template_traits.h">
+    <ClInclude Include="src\dtmlib\utilities\template_traits.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\structures\vectorial.h">
+    <ClInclude Include="src\dtmlib\structures\vectorial.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\experimental\math_experimental.h">
+    <ClInclude Include="src\dtmlib\experimental\math_experimental.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\mutils.h">
+    <ClInclude Include="src\dtmlib\utilities\mutils.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\functions\arithmetic.h">
+    <ClInclude Include="src\dtmlib\functions\arithmetic.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\structures\mtcomplex.h">
+    <ClInclude Include="src\dtmlib\structures\mtcomplex.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\structures\polynomial.h">
+    <ClInclude Include="src\dtmlib\structures\polynomial.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\functions\algorithm.h">
+    <ClInclude Include="src\dtmlib\functions\algorithm.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\functions\trigonometric.h">
+    <ClInclude Include="src\dtmlib\functions\trigonometric.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

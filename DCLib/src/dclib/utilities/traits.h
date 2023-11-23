@@ -28,12 +28,18 @@ namespace duc::traits {
 		DOUBLE = FIFO | FILO
 	};
 
+
 	constexpr Queue operator|(Queue first, Queue second) {
 		return Queue(int(first) | int(second));
 	}
 
 	enum Graph {
-		NORMAL = 0b0,
-		DIRECTED = 0b1
+		DEFAULT =	0b0000,
+		DIRECTED =	0b0001,
+		WEIGHTED =	0b0010,
 	};
+
+	constexpr Graph operator|(Graph first, Graph second) {
+		return Graph(int(first) | int(second));
+	}
 }

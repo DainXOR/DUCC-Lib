@@ -1,11 +1,11 @@
 #pragma once
 #include <vector>
 
-#include <utilities/conventions.h>
+#include <dtmlib/utilities/conventions.h>
+
 #include "../utilities/traits.h"
 
 #include "nodes.h"
-
 
 namespace duc::ex {
 
@@ -16,13 +16,14 @@ namespace duc::ex {
 
 		node_type *_root = nullptr;
 		size_t _depth = 0;
+		size_t _hightAuxiliar = 0;
 		size_t _lenght = 0;
 
 	public:
 		tree(node_type *root = tree::createNode(0)) {
 			this->_root = root;
 			for (size_t i = 0; i < branches; i++) {
-				this->_root->childs[i] = nullptr;
+				this->_root->setSibling(i, nullptr);
 			}
 
 			this->_depth++;
@@ -56,16 +57,16 @@ namespace duc::ex {
 			std::vector<node_type *> elements;
 
 			elements.push_back(this->begin());
-			this->getPreOrder(elements, this->begin()->getChild(0));
-			this->getPreOrder(elements, this->begin()->getChild(1));
+			this->getPreOrder(elements, this->begin()->getSibling(0));
+			this->getPreOrder(elements, this->begin()->getSibling(1));
 
 			return elements;
 		}
 		std::vector<node_type *> getPostOrder() {
 			std::vector<node_type *> elements;
 
-			this->getPostOrder(elements, this->begin()->getChild(0));
-			this->getPostOrder(elements, this->begin()->getChild(1));
+			this->getPostOrder(elements, this->begin()->getSibling(0));
+			this->getPostOrder(elements, this->begin()->getSibling(1));
 			elements.push_back(this->begin());
 
 			return elements;
@@ -73,9 +74,9 @@ namespace duc::ex {
 		std::vector<node_type *> getInOrder() {
 			std::vector<node_type *> elements;
 
-			this->getInOrder(elements, this->begin()->getChild(0));
+			this->getInOrder(elements, this->begin()->getSibling(0));
 			elements.push_back(this->begin());
-			this->getInOrder(elements, this->begin()->getChild(1));
+			this->getInOrder(elements, this->begin()->getSibling(1));
 
 			return elements;
 		}
@@ -126,16 +127,16 @@ namespace duc::ex {
 			}
 
 			buffer.push_back(node);
-			this->getPreOrder(buffer, node->getChild(0));
-			this->getPreOrder(buffer, node->getChild(1));
+			this->getPreOrder(buffer, node->getSibling(0));
+			this->getPreOrder(buffer, node->getSibling(1));
 		}
 		void getPostOrder(std::vector<node_type *> &buffer, node_type *node) {
 			if (node == nullptr) {
 				return;
 			}
 
-			this->getPostOrder(buffer, node->getChild(0));
-			this->getPostOrder(buffer, node->getChild(1));
+			this->getPostOrder(buffer, node->getSibling(0));
+			this->getPostOrder(buffer, node->getSibling(1));
 			buffer.push_back(node);
 		}
 		void getInOrder(std::vector<node_type *> &buffer, node_type *node) {
@@ -143,9 +144,9 @@ namespace duc::ex {
 				return;
 			}
 
-			this->getInOrder(buffer, node->getChild(0));
+			this->getInOrder(buffer, node->getSibling(0));
 			buffer.push_back(node);
-			this->getInOrder(buffer, node->getChild(1));
+			this->getInOrder(buffer, node->getSibling(1));
 		}
 
 		template<std::size_t N, std::size_t ... Is>
@@ -155,20 +156,30 @@ namespace duc::ex {
 
 		template<satisfy::Integer ...arg_t>
 		bool insert(node_type *newNode, node_type *node, size_t head, arg_t...order) {
-			if (node == nullptr || node->getChild(head) == nullptr)
+			if (node == nullptr || node->getSibling(head) == nullptr) {
+				this->_hightAuxiliar = 0;
 				return false;
+			}
 
-			return this->insert(newNode, node->getChild(head), order...);
+			this->_hightAuxiliar++;
+			return this->insert(newNode, node->getSibling(head), order...);
 		};
 		template<>
 		bool insert(node_type *newNode, node_type *node, size_t tail) {
-			if (node->getChild(tail) == nullptr) {
-				bool result = node->insertNode(newNode, tail);
+			bool result = node->getSibling(tail) == nullptr;
+
+			if (result) {
+				this->_hightAuxiliar++;
+				result = node->insertAt(tail, newNode);
 				this->_lenght += result;
-				return result;
+				this->_hightAuxiliar += result;
+				
+				this->_depth = this->_hightAuxiliar > this->_depth ?
+					this->_hightAuxiliar : this->_depth;
 			}
 
-			return false;
+			this->_hightAuxiliar = 0;
+			return result;
 		};
 
 		bool remove(size_t index) {};
@@ -199,17 +210,20 @@ namespace duc::ex {
 			this->_depth++;
 			this->_lenght++;
 		}
-
 		bi_tree(node_type *root) {
 			this->_root = root;
 			for (size_t i = 0; i < branches; i++) {
-				this->_root->childs[i] = nullptr;
+				this->_root->setSibling(i, nullptr);
 			}
 
 			this->_depth++;
 			this->_lenght++;
 		}
+	};
 
+	template<typename type>
+	class avl_tree : public bi_tree<type> {
+	public:
 
 	};
 };

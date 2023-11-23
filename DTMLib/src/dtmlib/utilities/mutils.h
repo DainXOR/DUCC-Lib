@@ -1,7 +1,7 @@
 #pragma once
+#include <cudlib/macro_tools.h>
 
 #include "template_traits.h"
-#include "macro_tools.h"
 
 
 namespace duc::mutil {
@@ -30,7 +30,7 @@ namespace duc::mutil {
 	}
 	constexpr double powerToInteger(double base, int64_t exponent) noexcept {
 		int8_t expSign = ((exponent > 0) * 2) - 1;
-		double result = powerPositiveInteger(base, exponent * expSign);
+		double result = powerPositiveInteger(base, uint64_t(exponent) * expSign);
 		return expSign == 1 ? result : 1 / result;
 	}
 

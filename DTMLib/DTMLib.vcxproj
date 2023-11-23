@@ -97,7 +97,7 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)CUDLib\src;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)src;$(SolutionDir)CUDLib\src;</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,7 +126,7 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)CUDLib\src;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)src;$(SolutionDir)CUDLib\src;</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -191,16 +191,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\dtmlib.h" />
-    <ClInclude Include="src\experimental\math_experimental.h" />
-    <ClInclude Include="src\functions\algorithm.h" />
-    <ClInclude Include="src\functions\arithmetic.h" />
-    <ClInclude Include="src\functions\trigonometric.h" />
-    <ClInclude Include="src\structures\mtcomplex.h" />
-    <ClInclude Include="src\structures\polynomial.h" />
-    <ClInclude Include="src\structures\vectorial.h" />
-    <ClInclude Include="src\utilities\conventions.h" />
-    <ClInclude Include="src\utilities\mutils.h" />
-    <ClInclude Include="src\utilities\template_traits.h" />
+    <ClInclude Include="src\dtmlib\experimental\math_experimental.h" />
+    <ClInclude Include="src\dtmlib\functions\algorithm.h" />
+    <ClInclude Include="src\dtmlib\functions\arithmetic.h" />
+    <ClInclude Include="src\dtmlib\functions\trigonometric.h" />
+    <ClInclude Include="src\dtmlib\structures\mtcomplex.h" />
+    <ClInclude Include="src\dtmlib\structures\polynomial.h" />
+    <ClInclude Include="src\dtmlib\structures\vectorial.h" />
+    <ClInclude Include="src\dtmlib\utilities\conventions.h" />
+    <ClInclude Include="src\dtmlib\utilities\mutils.h" />
+    <ClInclude Include="src\dtmlib\utilities\template_traits.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dtmlib.cpp" />

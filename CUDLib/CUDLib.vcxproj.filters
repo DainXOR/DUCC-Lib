@@ -15,28 +15,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\macro_tools.h">
+    <ClInclude Include="src\cudlib\macro_tools.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\experimental.h">
+    <ClInclude Include="src\cudlib\experimental.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="src\cudlib.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\benchmark.h">
+    <ClInclude Include="src\cudlib\benchmark.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\general_utils.h">
+    <ClInclude Include="src\cudlib\general_utils.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\general_conventions.h">
+    <ClInclude Include="src\cudlib\general_conventions.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils_declarations.h">
+    <ClInclude Include="src\cudlib\utils_declarations.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\simple_structures.h">
+    <ClInclude Include="src\cudlib\simple_structures.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
