@@ -602,10 +602,19 @@ namespace duc{
 		}
 
 		constexpr type& operator [](satisfy::Integer auto... indexes) DUC_RNOEXCEPT {
-			return (*this)(indexes...);
+			constexpr uint16_t IndexCount = sizeof...(indexes);
+			constexpr std::array<size_t, IndexCount> IndexesArray = { indexes... };
+			constexpr std::array Multipliers = mutil::calculateMultipliers(this->shape());
+			size_t index = 0;
+
+			for (uint16_t i = 0; i <= this->rank(); i++) {
+				index += IndexesArray[i] * Multipliers[i];
+			}
+
+			return this->_elements[index];
 		}
 		[[nodiscard]] constexpr const type& operator [](satisfy::Integer auto... indexes) DUC_CONST_RNOEXCEPT {
-			return (*this)(indexes...);
+			return (*this)[indexes...];
 		}
 
 		// > Math operations functions and operators

@@ -21,6 +21,24 @@ namespace duc::util {
 	template<class, int64_t number>
 	struct is_prime;
 
+
+
+	template<size_t count>
+	std::array<size_t, count> generatePrimes() {
+		std::array<size_t, count> primes = { 2, 3, 5, 7 };
+		// ...
+		return primes;
+	}
+
+	template<class type, size_t size>
+	bool processPrimes(std::array<type, size> primes) {
+		bool result = false;
+		// ...
+		return result;
+	}
+
+
+
 	namespace {
 		template<size_t count, auto v0, auto ...v>
 		struct expand_helper : expand_helper<count - 1, v0, v0, v...> {};
@@ -72,4 +90,9 @@ namespace duc::util {
 	template<int64_t end, int64_t begin = 0, int64_t step = 1, template<class, auto...> class predicate = yes>
 		requires (step != 0 && satisfy::ConstexprCallable<predicate, bool, int64_t>)
 	class sequence_array;
+
+	template<auto ...v>
+	std::array<std::common_type_t<decltype(v)...>, sizeof...(v)> asArray(duc::util::expansion<v...>) {
+		return std::array<std::common_type_t<decltype(v)...>, sizeof...(v)>{ v... };
+	}
 }

@@ -24,6 +24,8 @@
 #include <cmath>
 #include <numeric>
 #include <queue>
+#include <stack>
+#include <map>
 
 
 
@@ -168,7 +170,387 @@ namespace std {
 		}
 	};
 }
+namespace duc {
 
+	class numberx {
+		friend class builder;
+
+		std::vector<uint8_t> buffer;
+		uint8_t sign;
+		size_t digits;
+
+	public:
+		numberx() : buffer(), sign(1), digits(0) {}
+		class builder {
+			std::stack<uint8_t> buffer;
+			uint8_t sign;
+
+		public:
+			builder() : buffer(), sign(1) {}
+
+			builder& setNegative(uint8_t sign) {
+				this->sign = -1;
+				return *this;
+			}
+			builder& addDigit(int8_t digit) {
+				this->buffer.push(digit > 9 ? 9 : digit);
+				return *this;
+			}
+
+			template<class ...uints>
+			builder& addDigits(uint64_t num, uints ...tail) {
+				this->addNumber(num);
+
+				if constexpr (sizeof...(tail) != 0) {
+					this->addDigits(tail...);
+				}
+				return *this;
+			}
+
+			numberx build() {
+				numberx n;
+				n.sign = this->sign;
+				n.digits = this->buffer.size();
+
+
+				while (this->buffer.size() > 1) {
+					uint8_t leftDigit = this->buffer.top();
+					this->buffer.pop();
+					uint8_t rightDigit = this->buffer.top();
+					this->buffer.pop();
+
+					leftDigit <<= 4;
+					leftDigit |= rightDigit;
+					n.buffer.push_back(leftDigit);
+				}
+
+				if (this->buffer.size() == 1) {
+					n.buffer.push_back(this->buffer.top() << 4);
+					this->buffer.pop();
+				}
+
+				return n;
+			}
+
+		private:
+
+			builder& addNumber(int64_t num) {
+				uint16_t digits = duc::digits(num);
+				uint64_t pow10 = duc::pow(10, digits - 1);
+
+				while (digits > 0) {
+					uint64_t digit = num / pow10;
+					this->addDigit(digit);
+					num -= digit * pow10;
+					pow10 /= 10;
+					digits--;
+				}
+				return *this;
+			}
+		};
+
+		int8_t getDigit(int64_t index) const {
+			if (index > this->digits) {
+				return -1;
+			}
+
+			int8_t digit = this->buffer[index >> 1];
+			index & 0b1 ?
+				digit &= 0b00001111 :
+				digit >>= 4;
+
+			return digit;
+		}
+
+		std::strong_ordering operator<=>(const numberx& n) const noexcept {
+			if (this->digits != n.digits) {
+				return this->digits <=> n.digits;
+			}
+
+			for (int64_t i = this->digits; i > 0; i--) {
+				if (this->buffer[i - 1] != n.buffer[i - 1]) {
+					return this->buffer[i - 1] <=> n.buffer[i - 1];
+				}
+			}
+			return std::strong_ordering::equal;
+		}
+		std::strong_ordering operator<=>(const int64_t& n) const noexcept {
+			return *this <=> numberx::builder().addDigits(n).build();
+		}
+
+		bool operator==(const numberx& n) const noexcept = default;
+		bool operator==(const int64_t& n) const noexcept {
+			return *this == numberx::builder().addDigits(n).build();
+		}
+
+
+
+		numberx operator+(const numberx& other) {
+			numberx result;
+			result.sign = this->sign;
+
+			result.sign = *this > other ? this->sign : other.sign;
+			result.digits = std::min(this->digits, other.digits);
+
+			int8_t carry = 0;
+
+			int8_t carrySign = 0;
+
+			for (int64_t i = 0; i < (result.digits >> 1); i++) {
+				// Value, carry, sign
+				auto sumBack = this->adder(this->getDigit(i) * this->sign, other.getDigit(i) * other.sign);
+				auto sumFront = this->adder(this->getDigit(i + 1) * this->sign, other.getDigit(i + 1) * other.sign);
+
+				auto sumBackWithCarry = this->adder(sumBack.first * sumBack.third, carry * carrySign);
+				auto sumFrontWithCarry = this->adder(sumFront.first * sumFront.third, sumBackWithCarry.first * sumBackWithCarry.third);
+
+				result.buffer.push_back(sumBack.first | (sumFront.first << 4));
+
+				carry = sumFrontWithCarry.second;
+				carrySign = sumFrontWithCarry.third;
+			}
+			if (carry) {
+				result.buffer.push_back(carry);
+				result.digits++;
+			}
+
+			return result;
+		}
+		numberx operator+(int64_t number) {
+			return *this + numberx::builder().addDigits(number).build();
+		}
+
+		numberx operator*(const numberx& other) {
+			numberx result;
+			result.sign = this->sign * other.sign;
+			result.digits = this->digits + other.digits;
+
+			int8_t carry = 0;
+			int8_t carrySign = 0;
+
+			for (int64_t i = 0; i < (result.digits >> 1); i++) {
+				int8_t sum = 0;
+				for (int64_t j = 0; j <= i; j++) {
+					sum += this->getDigit(j) * this->sign * other.getDigit(i - j) * other.sign;
+				}
+				auto sumWithCarry = this->adder(sum, carry * carrySign);
+
+				result.buffer.push_back(sumWithCarry.first);
+				carry = sumWithCarry.second;
+				carrySign = sumWithCarry.third;
+			}
+			if (carry) {
+				result.buffer.push_back(carry);
+				result.digits++;
+			}
+
+			return result;
+		}
+		numberx operator*(int64_t number) {
+			return *this * numberx::builder().addDigits(number).build();
+		}
+
+		numberx operator-(const numberx& other) {
+			numberx copy = other;
+			copy.sign *= -1;
+			return *this + copy;
+		}
+		numberx operator-(int64_t number) {
+			return *this - numberx::builder().addDigits(number).build();
+		}
+
+		numberx operator/(const numberx& other) {
+			numberx result;
+			result.sign = this->sign * other.sign;
+			result.digits = this->digits - other.digits;
+
+			int8_t carry = 0;
+			int8_t carrySign = 0;
+
+			for (int64_t i = 0; i < (result.digits >> 1); i++) {
+				int8_t sum = 0;
+				for (int64_t j = 0; j <= i; j++) {
+					sum += this->getDigit(j) * this->sign * other.getDigit(i - j) * other.sign;
+				}
+				auto sumWithCarry = this->adder(sum, carry * carrySign);
+
+				result.buffer.push_back(sumWithCarry.first);
+				carry = sumWithCarry.second;
+				carrySign = sumWithCarry.third;
+			}
+			if (carry) {
+				result.buffer.push_back(carry);
+				result.digits++;
+			}
+
+			return result;
+		}
+		numberx operator/(int64_t number) {
+			return *this / numberx::builder().addDigits(number).build();
+		}
+
+		numberx operator%(const numberx& other) {
+			numberx result;
+			result.sign = this->sign * other.sign;
+			result.digits = this->digits - other.digits;
+
+			int8_t carry = 0;
+			int8_t carrySign = 0;
+
+			for (int64_t i = 0; i < (result.digits >> 1); i++) {
+				int8_t sum = 0;
+				for (int64_t j = 0; j <= i; j++) {
+					sum += this->getDigit(j) * this->sign * other.getDigit(i - j) * other.sign;
+				}
+				auto sumWithCarry = this->adder(sum, carry * carrySign);
+
+				result.buffer.push_back(sumWithCarry.first);
+				carry = sumWithCarry.second;
+				carrySign = sumWithCarry.third;
+			}
+			if (carry) {
+				result.buffer.push_back(carry);
+				result.digits++;
+			}
+
+			return result;
+		}
+		numberx operator%(int64_t number) {
+			return *this % numberx::builder().addDigits(number).build();
+		}
+
+
+
+		numberx operator&(const numberx& other) {
+			numberx result;
+			result.sign = this->sign * other.sign;
+			result.digits = this->digits - other.digits;
+
+			int8_t carry = 0;
+			int8_t carrySign = 0;
+
+			for (int64_t i = 0; i < (result.digits >> 1); i++) {
+				int8_t sum = 0;
+				for (int64_t j = 0; j <= i; j++) {
+					sum += this->getDigit(j) * this->sign * other.getDigit(i - j) * other.sign;
+				}
+				auto sumWithCarry = this->adder(sum, carry * carrySign);
+
+				result.buffer.push_back(sumWithCarry.first);
+				carry = sumWithCarry.second;
+				carrySign = sumWithCarry.third;
+			}
+			if (carry) {
+				result.buffer.push_back(carry);
+				result.digits++;
+			}
+
+			return result;
+		}
+		numberx operator&(int64_t number) {
+			return *this & numberx::builder().addDigits(number).build();
+		}
+
+		numberx operator|(const numberx& other) {
+			numberx result;
+			result.sign = this->sign * other.sign;
+			result.digits = this->digits - other.digits;
+
+			int8_t carry = 0;
+			int8_t carrySign = 0;
+
+			for (int64_t i = 0; i < (result.digits >> 1); i++) {
+				int8_t sum = 0;
+				for (int64_t j = 0; j <= i; j++) {
+					sum += this->getDigit(j) * this->sign * other.getDigit(i - j) * other.sign;
+				}
+				auto sumWithCarry = this->adder(sum, carry * carrySign);
+
+				result.buffer.push_back(sumWithCarry.first);
+				carry = sumWithCarry.second;
+				carrySign = sumWithCarry.third;
+			}
+			if (carry) {
+				result.buffer.push_back(carry);
+				result.digits++;
+			}
+
+			return result;
+		}
+		numberx operator|(int64_t number) {
+			return *this | numberx::builder().addDigits(number).build();
+		}
+
+		numberx operator^(const numberx& other) {
+			numberx result;
+			result.sign = this->sign * other.sign;
+			result.digits = this->digits - other.digits;
+
+			int8_t carry = 0;
+			int8_t carrySign = 0;
+
+			for (int64_t i = 0; i < (result.digits >> 1); i++) {
+				int8_t sum = 0;
+				for (int64_t j = 0; j <= i; j++) {
+					sum += this->getDigit(j) * this->sign * other.getDigit(i - j) * other.sign;
+				}
+				auto sumWithCarry = this->adder(sum, carry * carrySign);
+
+				result.buffer.push_back(sumWithCarry.first);
+				carry = sumWithCarry.second;
+				carrySign = sumWithCarry.third;
+			}
+			if (carry) {
+				result.buffer.push_back(carry);
+				result.digits++;
+			}
+
+			return result;
+		}
+		numberx operator^(int64_t number) {
+			return *this ^ numberx::builder().addDigits(number).build();
+		}
+
+
+
+
+
+		friend std::ostream& operator<<(std::ostream& os, const numberx& n) {
+			std::string rep;
+			for (int64_t i = n.buffer.size(); i > 0; i--) {
+
+				auto left = n.buffer[i - 1] >> 4;
+				auto right = n.buffer[i - 1] & 0x0f;
+
+				if (i < n.buffer.size() || !(n.digits & 0b1)) {
+					rep += std::to_string(right);
+				}
+				rep += std::to_string(left);
+			}
+			os << rep;
+			return os;
+		}
+
+	private:
+		duc::triplet<int8_t> adder(int16_t left, int16_t right) {
+			int16_t result = left + right;
+			int8_t sign = result > 0 ? 1 : -1;
+			result *= sign;
+			int8_t carry = result >> 8;
+
+			return { int8_t(result & 0b11111111), carry, sign };
+		}
+
+		duc::triplet<int8_t> multiplier(int16_t left, int16_t right) {
+			int16_t result = left * right;
+			int8_t sign = result > 0 ? 1 : -1;
+			result *= sign;
+			int8_t carry = result >> 8;
+
+			return { int8_t(result & 0b11111111), carry, sign };
+		}
+	};
+}
 
 template<uint8_t option>
 void cipherTest() {
@@ -278,8 +660,19 @@ void templateBending() {
 	duc::util::expansion t4 = duc::util::echo<3, 1, 2, 3>;
 
 	duc::util::expansion t5 = duc::util::sequence<15, 3, 3>;
-	duc::util::expansion t6 = duc::util::primeSequence<50, 11, 11>;
+
+	duc::util::expansion t6 = duc::util::primeSequence<50>;
+	std::cout << typeid(t6).name() << "\n";
+
+
 	duc::util::expansion t7 = duc::util::sequence<111, 11, 1, hyper_eleven>;
+
+	std::array t8 = duc::util::asArray(duc::util::sequence<15, 3, 3>);
+
+	for (auto value : t8) {
+		std::cout << value << " ";
+	}
+	std::cout << "\n";
 
 	constexpr bool hmmm_ = hyper_eleven<bool, 11111111>{}();
 	constexpr auto digs = duc::digits(11111111);
@@ -302,8 +695,59 @@ void printNodeAndSiblings(auto* parent) {
 }
 
 
+void numberxTest() {
+	duc::numberx n1 = duc::numberx::builder()
+		.addDigits(35400, 12345678, 987654321)
+		.build();
+
+	duc::numberx n2 = duc::numberx::builder()
+		.addDigit(5)
+		.addDigit(9)
+		.addDigit(0)
+		.addDigit(1)
+		.build();
+
+	std::cout << (n1 <= n2) << "\n";
+
+	std::cout << n1 << "\n";
+	std::cout << n2 << "\n";
+
+
+	auto nxComp = n1 <=> n2;
+	auto pComp = n1 <=> 420;
+
+
+	auto nxSum = n1 + n2;
+	auto pSum = n1 + 420;
+
+	auto nxSub = n1 - n2;
+	auto pSub = n1 - 420;
+
+	auto nxMul = n1 * n2;
+	auto pMul = n1 * 420;
+
+	auto nxDiv = n1 / n2;
+	auto pDiv = n1 / 420;
+
+	auto nxMod = n1 % n2;
+	auto pMod = n1 % 420;
+
+
+	auto nxAnd = n1 & n2;
+	auto pAnd = n1 & 420;
+
+	auto nxOr = n1 | n2;
+	auto pOr = n1 | 420;
+
+	auto nxXor = n1 ^ n2;
+	auto pXor = n1 ^ 420;
+}
+
 
 int main() {
+	srand(time(NULL));
+
+
 
 	//graphTest();
 	//mainDijkstra();

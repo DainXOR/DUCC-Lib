@@ -41,7 +41,10 @@ namespace duc::ex {
 		template<size_t size8BitNums, uint64_t bitsPerSection, class container>
 		class numberx {
 		public:
-			container _buffer;
+			container buffer;
+
+			uint64_t extraBits : 63;
+			bool isNegative : 1;
 
 		public:
 			numberx() {}
