@@ -67,8 +67,8 @@ namespace duc::util {
 		constexpr bool isPrime(int64_t num, expansion<I...>);
 	}
 
-	template<int64_t end, int64_t begin = 0, int64_t step = 1, template<class, auto...> class predicate = yes>
-	static constexpr expansion sequence = sequenceGenerator<end, begin, step, predicate, begin>();
+	template<int64_t end, int64_t begin = 0, int64_t step = 1, template<class, auto...> class filter = yes>
+	static constexpr expansion sequence = sequenceGenerator<end, begin, step, filter, begin>();
 
 	template<int64_t end, int64_t begin = 2, int64_t step = 1>
 	static constexpr expansion primeSequence = sequence<end, begin, step, is_prime>;

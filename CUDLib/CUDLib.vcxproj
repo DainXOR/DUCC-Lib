@@ -174,11 +174,18 @@
   <ItemGroup>
     <ClInclude Include="src\cudlib\benchmark.h" />
     <ClInclude Include="src\cudlib.h" />
+    <ClInclude Include="src\cudlib\control.hpp" />
+    <ClInclude Include="src\cudlib\debug_tools\experimental.hpp" />
+    <ClInclude Include="src\cudlib\error\auditor.hpp" />
     <ClInclude Include="src\cudlib\general_conventions.h" />
     <ClInclude Include="src\cudlib\general_utils.h" />
     <ClInclude Include="src\cudlib\macro_tools.h" />
     <ClInclude Include="src\cudlib\experimental.h" />
+    <ClInclude Include="src\cudlib\macro_tools\experimental.hpp" />
     <ClInclude Include="src\cudlib\simple_structures.h" />
+    <ClInclude Include="src\cudlib\structures\experimental.hpp" />
+    <ClInclude Include="src\cudlib\template_bending\experimental.hpp" />
+    <ClInclude Include="src\cudlib\types\simple_types.hpp" />
     <ClInclude Include="src\cudlib\utils_declarations.h" />
   </ItemGroup>
   <ItemGroup>

@@ -11,9 +11,6 @@
 #include "../functions/arithmetic.h"
 
 
-
-
-
 namespace duc{
 	/// > Declarations
 
@@ -547,10 +544,10 @@ namespace duc{
 	public:
 		// > Properties methods
 
-		constexpr size_t	size()	DUC_CONST_RNOEXCEPT		{ return traits::size; }
-		constexpr uint16_t	rank() DUC_CONST_RNOEXCEPT	{ return traits::rank; }
-		constexpr auto		shape() DUC_CONST_RNOEXCEPT		{ return traits::shape; }
-		constexpr size_t	dimention(satisfy::Integer auto rankPos) DUC_CONST_RNOEXCEPT {
+		constexpr size_t	size()	const noexcept { return traits::size; }
+		constexpr uint16_t	rank()	const noexcept { return traits::rank; }
+		constexpr auto		shape() const noexcept { return traits::shape; }
+		constexpr size_t	dimention(satisfy::Integer auto rankPos) const noexcept {
 			//DUC_TEST_THROW((rankPos <= properties::rank) && (rankPos >= 0), "Rank outside tensor.\n");
 
 			return properties::shape[rankPos];
@@ -558,7 +555,7 @@ namespace duc{
 
 		// > Access functions and operators
 
-		constexpr type& operator()(satisfy::Integer auto... indexes) DUC_RNOEXCEPT {
+		constexpr type& operator()(satisfy::Integer auto... indexes) noexcept {
 
 			constexpr uint16_t IndexCount = sizeof...(indexes);
 			//DUC_TEST_THROW(IndexCount > 0, "No indexes provided.");
@@ -588,20 +585,11 @@ namespace duc{
 			return _elements[index];
 
 		}
-		[[nodiscard]] constexpr const type& operator()(satisfy::Integer auto... indexes) DUC_RNOEXCEPT {
+		[[nodiscard]] constexpr const type& operator()(satisfy::Integer auto... indexes) noexcept {
 			return (*this)(indexes...);
 		}
 
-		constexpr type& operator [](size_t index) DUC_RNOEXCEPT {
-			//DUC_TEST_THROW(index < size(), "The index is outside the tensor. (Max = " + duc::util::toChars(size() - 1) + ")");
-
-			return _elements[index];
-		}
-		[[nodiscard]] constexpr const type& operator [](size_t index) DUC_CONST_RNOEXCEPT {
-			return (*this)[index];
-		}
-
-		constexpr type& operator [](satisfy::Integer auto... indexes) DUC_RNOEXCEPT {
+		constexpr type& operator [](satisfy::Integer auto... indexes) noexcept {
 			constexpr uint16_t IndexCount = sizeof...(indexes);
 			constexpr std::array<size_t, IndexCount> IndexesArray = { indexes... };
 			constexpr std::array Multipliers = mutil::calculateMultipliers(this->shape());
@@ -613,12 +601,12 @@ namespace duc{
 
 			return this->_elements[index];
 		}
-		[[nodiscard]] constexpr const type& operator [](satisfy::Integer auto... indexes) DUC_CONST_RNOEXCEPT {
-			return (*this)[indexes...];
+		[[nodiscard]] constexpr const type& operator [](satisfy::Integer auto... indexes) const noexcept {
+			return this->operator[](indexes...);
 		}
 
 		// > Math operations functions and operators
-		tensor& operator+(const tensor& other) DUC_RNOEXCEPT {
+		tensor& operator+(const tensor& other) noexcept {
 			//DUC_TEST_ERROR(mutil::isTensorsShapeCompatible(rank(), shape(), other.shape()),
 			//			   "The tensors must have a compatible shape.");
 

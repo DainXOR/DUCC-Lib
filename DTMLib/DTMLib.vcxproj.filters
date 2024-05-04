@@ -36,7 +36,7 @@
     <ClInclude Include="src\dtmlib\functions\arithmetic.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="src\dtmlib\structures\mtcomplex.h">
+    <ClInclude Include="src\dtmlib\structures\complex.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="src\dtmlib\structures\polynomial.h">
@@ -46,6 +46,18 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="src\dtmlib\functions\trigonometric.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dtmlib\functions\properties.hpp">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dtmlib\functions\experimental.hpp">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dtmlib\structures\experimental.hpp">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dtmlib\utilities\experimental.hpp">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

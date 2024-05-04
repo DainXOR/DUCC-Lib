@@ -194,11 +194,15 @@
     <ClInclude Include="src\dtmlib\experimental\math_experimental.h" />
     <ClInclude Include="src\dtmlib\functions\algorithm.h" />
     <ClInclude Include="src\dtmlib\functions\arithmetic.h" />
+    <ClInclude Include="src\dtmlib\functions\experimental.hpp" />
+    <ClInclude Include="src\dtmlib\functions\properties.hpp" />
     <ClInclude Include="src\dtmlib\functions\trigonometric.h" />
-    <ClInclude Include="src\dtmlib\structures\mtcomplex.h" />
+    <ClInclude Include="src\dtmlib\structures\complex.h" />
+    <ClInclude Include="src\dtmlib\structures\experimental.hpp" />
     <ClInclude Include="src\dtmlib\structures\polynomial.h" />
     <ClInclude Include="src\dtmlib\structures\vectorial.h" />
     <ClInclude Include="src\dtmlib\utilities\conventions.h" />
+    <ClInclude Include="src\dtmlib\utilities\experimental.hpp" />
     <ClInclude Include="src\dtmlib\utilities\mutils.h" />
     <ClInclude Include="src\dtmlib\utilities\template_traits.h" />
   </ItemGroup>

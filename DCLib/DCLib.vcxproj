@@ -183,16 +183,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\dclib.h" />
+    <ClInclude Include="src\dclib\algorithms\experimental.hpp" />
     <ClInclude Include="src\dclib\experimental\dijkstra.h" />
     <ClInclude Include="src\dclib\experimental\graph.h" />
     <ClInclude Include="src\dclib\experimental\linked_lists.h" />
     <ClInclude Include="src\dclib\experimental\nodes.h" />
     <ClInclude Include="src\dclib\structures\collections.h" />
+    <ClInclude Include="src\dclib\structures\experimental.hpp" />
     <ClInclude Include="src\dclib\utilities\collection_base.h" />
     <ClInclude Include="src\dclib\structures\data_structures.h" />
     <ClInclude Include="src\dclib\experimental\sstring.h" />
     <ClInclude Include="src\dclib\experimental\tree.h" />
     <ClInclude Include="src\dclib\utilities\conventions.h" />
+    <ClInclude Include="src\dclib\utilities\experimental.hpp" />
     <ClInclude Include="src\dclib\utilities\traits.h" />
   </ItemGroup>
   <ItemGroup>

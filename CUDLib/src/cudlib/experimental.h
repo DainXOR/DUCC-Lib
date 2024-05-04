@@ -6,6 +6,7 @@
 #define X(before,after,arg) before arg ## after
 #define Y(arg) arg
 
+// Gives the number of args passed to it
 #define PP_NARG(...)    PP_NARG_(__VA_ARGS__,PP_RSEQ_N())
 #define PP_NARG_(...)   PP_ARG_N(__VA_ARGS__)
 

@@ -44,6 +44,22 @@ namespace duc {
 	}
 
 	namespace conditional {
+		template<class true_type, class false_type, bool condtion = false>
+		struct conditional_type {
+			using type = false_type;
+		};
+
+		template<class true_type, class false_type>
+		struct conditional_type<true_type, false_type, true> {
+			using type = true_type;
+		};
+
+		template<size_t bits>
+		struct min_fit_type {
+			static constexpr size_t size = (bits >> 3) + (bits % 8 > 0);
+			using type = uint8_t;
+		};
+
 
 		template<size_t size_ask, size_t bytes_cap, typename type>
 		struct size_cap {

@@ -179,6 +179,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="result.hpp" />
+    <ClInclude Include="src\dtplib\simple_cipher\experimental.hpp" />
     <ClInclude Include="src\dtplib\simple_cipher\reticent.hpp" />
     <ClInclude Include="src\dtplib.h" />
     <ClInclude Include="src\dtplib\simple_cipher\caesar.h" />
